@@ -4,6 +4,7 @@ import {
 } from 'react-router-dom'
 import { Dashboard } from '../pages/Dashboard'
 import { Preview } from '../pages/Preview'
+import { UserProvider } from '../context/UserContext'
 
 const router = createBrowserRouter([
   {
@@ -11,9 +12,17 @@ const router = createBrowserRouter([
     element: <Dashboard />
   },
   {
-    path: '/preview',
+    path: '/preview/:id',
     element: <Preview />
+  },
+  {
+    path: '/*',
+    element: <h1>Not found</h1>
   }
 ])
 
-export const RouterMain = () => <RouterProvider router={router} />
+export const RouterMain = () => (
+  <UserProvider>
+    <RouterProvider router={router} />
+  </UserProvider>
+)
