@@ -5,11 +5,16 @@ import {
 import { Dashboard } from '../pages/Dashboard'
 import { Preview } from '../pages/Preview'
 import { UserProvider } from '../context/UserContext'
+import { Login } from '../pages/Login'
 
 const router = createBrowserRouter([
   {
     path: '/',
     element: <Dashboard />
+  },
+  {
+    path: '/login',
+    element: <Login />
   },
   {
     path: '/preview/:id',

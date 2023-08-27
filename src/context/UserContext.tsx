@@ -11,13 +11,14 @@ export const useUser = () => useContext(UserContext)
 
 export const UserProvider = ({ children }: { children: JSX.Element }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const addUser = (user: User | null) => {
     setUser(user)
   }
 
   return (
-    <UserContext.Provider value={{ ...state, user, addUser }}>
+    <UserContext.Provider value={{ ...state, user, addUser, loading, setLoading }}>
       {children}
     </UserContext.Provider>
   )
