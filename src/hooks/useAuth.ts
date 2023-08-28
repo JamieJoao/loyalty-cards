@@ -1,4 +1,4 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import {
   onAuthStateChanged,
   signInWithEmailAndPassword,
@@ -9,7 +9,8 @@ import { auth } from '../firebase/init'
 import { useUser } from '../context/UserContext'
 
 export const useAuth = () => {
-  const { addUser } = useUser()
+  const { addUser, setLoading } = useUser()
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, user => {
@@ -19,24 +20,41 @@ export const useAuth = () => {
     return () => unsubscribe()
   }, [])
 
-  const login = async (email: string, password: string) => {
+  const login = async (email: string, password: string, callback?: () => void) => {
     try {
-      await signInWithEmailAndPassword(auth, email, password)
+      setLoading(true)
+      
+      const res = await signInWithEmailAndPassword(auth, email, password)
+      if (res?.user) {
+        localStorage.setItem('auth-token', res.user.refreshToken)
+      }
+
+      setLoading(false)
+      if (callback) callback()
     } catch (error) {
       console.log(error)
+      setError(String(error))
     }
   }
 
-  const logout = async () => {
+  const logout = async (callback?: () => void) => {
     try {
+      setLoading(true)
+
       await signOut(auth)
+      localStorage.removeItem('auth-token')
+
+      setLoading(false)
+      if (callback) callback()
     } catch (error) {
       console.log(error)
+      setError(String(error))
     }
   }
 
   return {
     login,
     logout,
+    error,
   }
 }

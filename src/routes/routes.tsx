@@ -1,33 +1,42 @@
 import {
-  createBrowserRouter,
-  RouterProvider,
+  BrowserRouter,
+  Navigate,
+  Route,
+  Routes,
 } from 'react-router-dom'
-import { Dashboard } from '../pages/Dashboard'
-import { Preview } from '../pages/Preview'
-import { UserProvider } from '../context/UserContext'
-import { Login } from '../pages/Login'
 
-const router = createBrowserRouter([
-  {
-    path: '/',
-    element: <Dashboard />
-  },
-  {
-    path: '/login',
-    element: <Login />
-  },
-  {
-    path: '/preview/:id',
-    element: <Preview />
-  },
-  {
-    path: '/*',
-    element: <h1>Not found</h1>
-  }
-])
+import {
+  Dashboard,
+  Login,
+  Preview,
+} from '../pages'
+import { isLoggedUser } from '../utils/functions'
+import { useUser } from '../context/UserContext'
 
-export const RouterMain = () => (
-  <UserProvider>
-    <RouterProvider router={router} />
-  </UserProvider>
-)
+export const RouterMain = () => {
+  const { user } = useUser()
+  const isLogged = user ?? isLoggedUser()
+
+  return (
+    <BrowserRouter basename={import.meta.env.DEV ? '/' : '/bocato-ticket/'}>
+      <Routes>
+        <Route
+          path='/'
+          element={
+            isLogged
+              ? <Dashboard />
+              : <Navigate to='/login' replace />
+          } />
+        <Route
+          path='/login'
+          element={
+            isLogged
+              ? <Navigate to='/' replace />
+              : <Login />
+          } />
+
+        <Route path='/preview/:id' element={<Preview />} />
+      </Routes>
+    </BrowserRouter>
+  )
+}

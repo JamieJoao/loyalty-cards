@@ -1,5 +1,5 @@
 import { useEffect } from 'react'
-import { Navigate, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { useClient } from '../hooks/useClient'
 import { useAuth } from '../hooks/useAuth'
@@ -11,8 +11,6 @@ export const Dashboard = () => {
   const { clients, getClients, updateClient } = useClient()
   const { logout } = useAuth()
   const { user, loading } = useUser()
-
-  console.log(clients)
 
   useEffect(() => {
     const unsubscribe = getClients()
@@ -40,48 +38,46 @@ export const Dashboard = () => {
     return <h1>Cargando usuarios...</h1>
   }
 
-  return user
-    ? (
-      <>
-        <code>{JSON.stringify(user, null, 2)}</code>
-        <hr />
-        <button onClick={handleLogout}>Salir</button>
-  
-        <button>Agregar cliente</button>
-        <button>Diseñar ticket</button>
-        <hr />
-        <table border={1}>
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Nombre</th>
-              <th>DNI</th>
-              <th>Compras</th>
+  return (
+    <>
+      <code>{JSON.stringify(user, null, 2)}</code>
+      <hr />
+      <button onClick={handleLogout}>Salir</button>
+
+      <button>Agregar cliente</button>
+      <button>Diseñar ticket</button>
+      <hr />
+      <table border={1}>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Nombre</th>
+            <th>DNI</th>
+            <th>Compras</th>
+          </tr>
+        </thead>
+        <tbody>
+          {clients.map(({ name, dni, purchases, id }, index) => (
+            <tr key={id}>
+              <td>{index + 1}</td>
+              <td>{name}</td>
+              <td>{dni}</td>
+              <td>
+                {user && <button onClick={() => handleIncreasePurchase(purchases, id)}>{purchases}</button>}
+                {!user && <span>{purchases}</span>}
+              </td>
+              <td>
+                <button onClick={() => handleGoToPreview(id)}>ticket</button>
+              </td>
+              {user && (
+                <td>
+                  <button onClick={handleShare}>compartir</button>
+                </td>
+              )}
             </tr>
-          </thead>
-          <tbody>
-            {clients.map(({ name, dni, purchases, id }, index) => (
-              <tr key={id}>
-                <td>{index + 1}</td>
-                <td>{name}</td>
-                <td>{dni}</td>
-                <td>
-                  {user && <button onClick={() => handleIncreasePurchase(purchases, id)}>{purchases}</button>}
-                  {!user && <span>{purchases}</span>}
-                </td>
-                <td>
-                  <button onClick={() => handleGoToPreview(id)}>ticket</button>
-                </td>
-                {user && (
-                  <td>
-                    <button onClick={handleShare}>compartir</button>
-                  </td>
-                )}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </>
-    )
-    : <Navigate to='/login' />
+          ))}
+        </tbody>
+      </table>
+    </>
+  )
 }
