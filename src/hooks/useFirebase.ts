@@ -2,10 +2,11 @@ import {
   collection,
   query,
   where,
-  getDocs,
-  doc,
-  updateDoc,
   onSnapshot,
+  doc,
+  getDocs,
+  updateDoc,
+  addDoc,
 } from 'firebase/firestore'
 
 import { db } from "../firebase/init"
@@ -57,10 +58,19 @@ export const useFirebase = () => {
 
   const updateDocument = async (table: string, id: string, data: { [key: string]: string | boolean | number }) => {
     try {
-      const document = doc(db, table, id)
-      await updateDoc(document, data)
+      const docRef = doc(db, table, id)
+      await updateDoc(docRef, data)
     } catch (error) {
       console.log([error])
+    }
+  }
+
+  const addDocument = async (table: string, data?: { [key: string]: string | boolean | number }) => {
+    try {
+      const collectionRef = collection(db, table)
+      return await addDoc(collectionRef, data)
+    } catch (error) {
+      console.log('Error in addDocument', error)
     }
   }
 
@@ -69,5 +79,6 @@ export const useFirebase = () => {
     getSnapshot,
     getSnapshotByLabel,
     updateDocument,
+    addDocument,
   }
 }

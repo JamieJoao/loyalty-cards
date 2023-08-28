@@ -1,37 +1,43 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { useClient } from '../hooks/useClient'
 import { useAuth } from '../hooks/useAuth'
 import { useUser } from '../context/UserContext'
+import { WhatsappShareButton } from 'react-share'
+import { linkToCustomer } from '../domain/constants'
 
 export const Dashboard = () => {
   const navigate = useNavigate()
 
-  const { clients, getClients, updateClient } = useClient()
+  const { clients, getClients, updateClient, addPossibleCustomer } = useClient()
   const { logout } = useAuth()
   const { user, loading } = useUser()
+  const [customerId, setCustomerId] = useState<string | null>(null)
 
   useEffect(() => {
     const unsubscribe = getClients()
 
     return () => unsubscribe()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleGoToPreview = (id: string) => {
     navigate(`/preview/${id}`)
   }
 
-  const handleIncreasePurchase = (purchases: number, id: string) => {
-    updateClient(id, { purchases: purchases + 1 })
+  const handleIncreasePurchase = (stage: number, id: string) => {
+    updateClient(id, { stage: stage + 1 })
   }
 
   const handleLogout = () => {
     logout()
   }
 
-  const handleShare = () => {
-    navigator.share({ text: 'abc' })
+  const handleGenerateUserLink = async () => {
+    const possibleCustommerId = await addPossibleCustomer()
+
+    if (possibleCustommerId) setCustomerId(possibleCustommerId)
   }
 
   if (loading) {
@@ -40,12 +46,17 @@ export const Dashboard = () => {
 
   return (
     <>
-      <code>{JSON.stringify(user, null, 2)}</code>
+      <h1>Bienvenido {user?.email}</h1>
       <hr />
-      <button onClick={handleLogout}>Salir</button>
 
-      <button>Agregar cliente</button>
+      <button>Diseñar formulario de cliente</button>
       <button>Diseñar ticket</button>
+      <button onClick={handleGenerateUserLink}>Generar link de usuario</button>
+      <button onClick={handleLogout}>Salir</button>
+      <hr />
+      <WhatsappShareButton url={linkToCustomer + customerId}>
+        <span>Compartir al whattsap</span>
+      </WhatsappShareButton>
       <hr />
       <table border={1}>
         <thead>
@@ -57,21 +68,23 @@ export const Dashboard = () => {
           </tr>
         </thead>
         <tbody>
-          {clients.map(({ name, dni, purchases, id }, index) => (
+          {clients.map(({ name, dni, stage, id }, index) => (
             <tr key={id}>
               <td>{index + 1}</td>
               <td>{name}</td>
               <td>{dni}</td>
               <td>
-                {user && <button onClick={() => handleIncreasePurchase(purchases, id)}>{purchases}</button>}
-                {!user && <span>{purchases}</span>}
+                {user && <button onClick={() => handleIncreasePurchase(stage, id)}>{stage}</button>}
+                {!user && <span>{stage}</span>}
               </td>
               <td>
                 <button onClick={() => handleGoToPreview(id)}>ticket</button>
               </td>
               {user && (
                 <td>
-                  <button onClick={handleShare}>compartir</button>
+                  <WhatsappShareButton url={linkToCustomer + id}>
+                    <span>{linkToCustomer + id}</span>
+                  </WhatsappShareButton>
                 </td>
               )}
             </tr>

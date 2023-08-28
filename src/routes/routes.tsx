@@ -36,6 +36,7 @@ export const RouterMain = () => {
           } />
 
         <Route path='/preview/:id' element={<Preview />} />
+        <Route element={<h1>404 bocato</h1>} />
       </Routes>
     </BrowserRouter>
   )

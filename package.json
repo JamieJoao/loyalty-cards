@@ -1,10 +1,11 @@
 {
+  "homepage": "https://jamiejoao.github.io/bocato-ticket",
   "name": "bocato-cards",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --host",
+    "start": "vite --host",
     "build": "tsc && vite build && cp ./dist/index.html .dist/404.html",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
@@ -13,9 +14,13 @@
   "dependencies": {
     "dotenv": "^16.3.1",
     "firebase": "^10.3.0",
+    "i": "^0.3.7",
+    "npm": "^9.8.1",
     "react": "^18.2.0",
+    "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.15.0",
+    "react-share": "^4.4.1",
     "sass": "^1.66.1"
   },
   "devDependencies": {

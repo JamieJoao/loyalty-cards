@@ -1,5 +1,18 @@
+export interface CustomerInput {
+  key: string
+  label: string
+  required: boolean
+  defaultValue: string
+  values?: {
+    label: string,
+    value: string,
+    props?: string[]
+  }[]
+  type: 'text' | 'select' | 'number' | 'date'
+}
+
 export interface Enviroments {
-  purchasesLimit: number
-  steeps: number
+  clientsInformation: CustomerInput[]
   gifts: number[]
+  id: string
 }
