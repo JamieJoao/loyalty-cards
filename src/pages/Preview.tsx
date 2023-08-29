@@ -5,10 +5,11 @@ import { useClient } from '../hooks/useClient'
 import { useEnviroment } from '../hooks/useEnviroment'
 import { useUser } from '../context/UserContext'
 import { CustomerDataForm } from '../components'
+import { CustomerForm } from '../types/CustomerInterface'
 
 export const Preview = () => {
   const { id } = useParams()
-  const { client, getClient } = useClient()
+  const { client, getClient, updateClient } = useClient()
   const { enviroments, getEnviroments } = useEnviroment()
   const { loading } = useUser()
 
@@ -22,17 +23,23 @@ export const Preview = () => {
     }
   }, [])
 
+  const handleSubmit = (customer: CustomerForm) => {
+    if (id) {
+      updateClient(id, { ...customer, completeData: true, stage: 0 })
+    }
+  }
+
   if (loading) {
     return <h1>Cargando tu ticket...</h1>
   }
 
   else if (client && enviroments) {
-    const { completeData, name: clientName } = client
+    const { completeData, names: clientName } = client
     const { clientsInformation } = enviroments
 
     if (!completeData && enviroments) {
       return (
-        <CustomerDataForm labelsMap={clientsInformation ?? []} />
+        <CustomerDataForm labelsMap={clientsInformation ?? []} onSubmit={handleSubmit} />
       )
     }
 
@@ -51,5 +58,8 @@ export const Preview = () => {
         <button>100%</button>
       </section>
     )
+  }
+  else {
+    return <h1>No se encontró información</h1>
   }
 }

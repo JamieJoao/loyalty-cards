@@ -1,11 +1,13 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import { useClient } from '../hooks/useClient'
 import { useAuth } from '../hooks/useAuth'
 import { useUser } from '../context/UserContext'
 import { WhatsappShareButton } from 'react-share'
-import { linkToCustomer } from '../domain/constants'
+import { projectURL } from '../domain/constants'
+import { Modal } from '../components/modal/Modal'
 
 export const Dashboard = () => {
   const navigate = useNavigate()
@@ -54,43 +56,65 @@ export const Dashboard = () => {
       <button onClick={handleGenerateUserLink}>Generar link de usuario</button>
       <button onClick={handleLogout}>Salir</button>
       <hr />
-      <WhatsappShareButton url={linkToCustomer + customerId}>
-        <span>Compartir al whattsap</span>
-      </WhatsappShareButton>
-      <hr />
       <table border={1}>
         <thead>
           <tr>
             <th>#</th>
             <th>Nombre</th>
             <th>DNI</th>
+            <th>Cumpleaños</th>
+            <th>Ocupación</th>
+            <th>Dirección</th>
+            <th>Teléfono</th>
+            <th>Sexo</th>
             <th>Compras</th>
           </tr>
         </thead>
         <tbody>
-          {clients.map(({ name, dni, stage, id }, index) => (
-            <tr key={id}>
-              <td>{index + 1}</td>
-              <td>{name}</td>
-              <td>{dni}</td>
-              <td>
-                {user && <button onClick={() => handleIncreasePurchase(stage, id)}>{stage}</button>}
-                {!user && <span>{stage}</span>}
-              </td>
-              <td>
-                <button onClick={() => handleGoToPreview(id)}>ticket</button>
-              </td>
-              {user && (
+          {clients
+            .filter(obj => obj.completeData)
+            .map(({ names, dni, birthdayDate, occupation, address, phone, sex, stage, id }, index) => (
+              <tr key={id}>
+                <td>{index + 1}</td>
+                <td>{names}</td>
+                <td>{dni}</td>
+                <td>{birthdayDate + ''}</td>
+                <td>{occupation}</td>
+                <td>{address}</td>
+                <td>{phone}</td>
+                <td>{sex}</td>
                 <td>
-                  <WhatsappShareButton url={linkToCustomer + id}>
-                    <span>{linkToCustomer + id}</span>
-                  </WhatsappShareButton>
+                  {user && <button onClick={() => handleIncreasePurchase(stage, id)}>{stage}</button>}
+                  {!user && <span>{stage}</span>}
                 </td>
-              )}
-            </tr>
-          ))}
+                <td>
+                  <button onClick={() => handleGoToPreview(id)}>ticket</button>
+                </td>
+                {user && (
+                  <td>
+                    <WhatsappShareButton url={`${projectURL}preview/${id}`}>
+                      <span>Whattsap</span>
+                    </WhatsappShareButton>
+                  </td>
+                )}
+              </tr>
+            ))}
         </tbody>
       </table>
+      {customerId && (
+        <Modal
+          onClose={() => setCustomerId(null)}
+          onAccept={() => { }}>
+          <WhatsappShareButton url={`${projectURL}preview/${customerId}`}>
+            <span>Whattsapp</span>
+          </WhatsappShareButton>
+          <CopyToClipboard text={`${projectURL}preview/${customerId}`}>
+            <button>
+              Copiar link
+            </button>
+          </CopyToClipboard>
+        </Modal>
+      )}
     </>
   )
 }

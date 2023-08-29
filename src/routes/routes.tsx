@@ -1,5 +1,5 @@
 import {
-  BrowserRouter,
+  HashRouter,
   Navigate,
   Route,
   Routes,
@@ -18,7 +18,7 @@ export const RouterMain = () => {
   const isLogged = user ?? isLoggedUser()
 
   return (
-    <BrowserRouter basename={import.meta.env.DEV ? '/' : '/bocato-ticket/'}>
+    <HashRouter>
       <Routes>
         <Route
           path='/'
@@ -38,6 +38,6 @@ export const RouterMain = () => {
         <Route path='/preview/:id' element={<Preview />} />
         <Route element={<h1>404 bocato</h1>} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
   )
 }

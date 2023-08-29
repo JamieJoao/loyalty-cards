@@ -1,15 +1,4 @@
-export interface CustomerInput {
-  key: string
-  label: string
-  required: boolean
-  defaultValue: string
-  values?: {
-    label: string,
-    value: string,
-    props?: string[]
-  }[]
-  type: 'text' | 'select' | 'number' | 'date'
-}
+import { CustomerInput } from "./CustomerInterface"
 
 export interface Enviroments {
   clientsInformation: CustomerInput[]

@@ -2,19 +2,19 @@ import { useState } from 'react'
 import { Unsubscribe } from 'firebase/auth'
 
 import { useFirebase } from "./useFirebase"
-import { ClientResponse } from '../types/ClientResponse'
+import { CustomerInterface } from '../types/CustomerInterface'
 import { useUser } from '../context/UserContext'
 import { customerCollectionName } from '../domain/constants'
 
 export const useClient = () => {
   const { getSnapshot, getSnapshotByLabel, updateDocument, addDocument } = useFirebase()
   const { setLoading } = useUser()
-  const [clients, setClients] = useState<ClientResponse[]>([])
-  const [client, setClient] = useState<ClientResponse | null>(null)
+  const [clients, setClients] = useState<CustomerInterface[]>([])
+  const [client, setClient] = useState<CustomerInterface | null>(null)
 
   const getClients = (): Unsubscribe => {
     setLoading(true)
-    const unsubscribe = getSnapshot<ClientResponse>(customerCollectionName, data => {
+    const unsubscribe = getSnapshot<CustomerInterface>(customerCollectionName, data => {
       setClients(data)
       setLoading(false)
     })
@@ -24,7 +24,7 @@ export const useClient = () => {
 
   const getClient = (id: string) => {
     setLoading(true)
-    const unsubscribe = getSnapshotByLabel<ClientResponse>(
+    const unsubscribe = getSnapshotByLabel<CustomerInterface>(
       customerCollectionName,
       { name: '__name__', value: id },
       data => {
