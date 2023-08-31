@@ -60,7 +60,11 @@
 
               .bc-card {
                 &__heart {
-                  height: 12px;
+                  height: 14px;
+
+                  @include media-tablet {
+                    height: 18px;
+                  }
 
                   &.--left {
                     transform: rotateZ(-45deg);

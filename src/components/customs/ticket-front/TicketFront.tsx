@@ -1,7 +1,7 @@
 import { FC } from 'react'
 
 import CupCakeImage from 'assets/images/cupcake.png'
-import HeartImage from 'assets/images/heart.svg'
+import HeartImage from 'assets/images/heart-2.png'
 import ChipsImage from 'assets/images/chips.png'
 
 interface TicketFrontProps {

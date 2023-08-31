@@ -36,19 +36,24 @@ export const Ticket = () => {
 
   else if (client && enviroments) {
     const { completeData, names, stage } = client
-    const { clientsInformation, gifts } = enviroments
+    const { clientsInformation, cardBack } = enviroments
     const [firstName = 'Tú', secondName = ''] = names.split(' ')
 
     if (!completeData && enviroments) {
       return (
-        <CustomerDataForm labelsMap={clientsInformation ?? []} onSubmit={handleSubmit} />
+        <CustomerDataForm
+          labelsMap={clientsInformation ?? []}
+          onSubmit={handleSubmit} />
       )
     }
 
     return (
       <div className='bc-preview'>
-        <TicketFront customerName={`${firstName} ${secondName}`} />
-        <TicketBack gifts={gifts} stage={stage} />
+        <TicketFront
+          customerName={`${firstName} ${secondName}`} />
+        <TicketBack
+          cardBackData={cardBack}
+          stage={stage} />
       </div>
     )
   }

@@ -1,7 +1,13 @@
 import { CustomerInput } from "./CustomerInterface"
 
+export interface CardBack {
+  gifts: number[]
+  title: string
+  subtitle: string
+}
+
 export interface Enviroments {
   clientsInformation: CustomerInput[]
-  gifts: number[]
+  cardBack: CardBack
   id: string
 }
