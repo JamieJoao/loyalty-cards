@@ -8,10 +8,10 @@ import {
 import {
   Dashboard,
   Login,
-  Preview,
-} from '../pages'
-import { isLoggedUser } from '../utils/functions'
-import { useUser } from '../context/UserContext'
+  Ticket,
+} from 'pages/index'
+import { isLoggedUser } from 'utils/functions'
+import { useUser } from 'context/UserContext'
 
 export const RouterMain = () => {
   const { user } = useUser()
@@ -35,7 +35,7 @@ export const RouterMain = () => {
               : <Login />
           } />
 
-        <Route path='/preview/:id' element={<Preview />} />
+        <Route path='/ticket/:id' element={<Ticket />} />
         <Route element={<h1>404 bocato</h1>} />
       </Routes>
     </HashRouter>

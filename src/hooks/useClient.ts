@@ -2,9 +2,9 @@ import { useState } from 'react'
 import { Unsubscribe } from 'firebase/auth'
 
 import { useFirebase } from "./useFirebase"
-import { CustomerInterface } from '../types/CustomerInterface'
-import { useUser } from '../context/UserContext'
-import { customerCollectionName } from '../domain/constants'
+import { CustomerInterface } from 'types/CustomerInterface'
+import { useUser } from 'context/UserContext'
+import { customerCollectionName } from 'domain/constants'
 
 export const useClient = () => {
   const { getSnapshot, getSnapshotByLabel, updateDocument, addDocument } = useFirebase()

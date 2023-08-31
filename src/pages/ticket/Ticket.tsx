@@ -1,13 +1,14 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { useClient } from '../hooks/useClient'
-import { useEnviroment } from '../hooks/useEnviroment'
-import { useUser } from '../context/UserContext'
-import { CustomerDataForm } from '../components'
-import { CustomerForm } from '../types/CustomerInterface'
+import { useClient } from 'hooks/useClient'
+import { useEnviroment } from 'hooks/useEnviroment'
+import { useUser } from 'context/UserContext'
+import { CustomerDataForm, TicketFront } from 'components/index'
+import { TicketBack } from 'components/customs/ticket-back/TicketBack'
+import { CustomerForm } from 'types/CustomerInterface'
 
-export const Preview = () => {
+export const Ticket = () => {
   const { id } = useParams()
   const { client, getClient, updateClient } = useClient()
   const { enviroments, getEnviroments } = useEnviroment()
@@ -25,7 +26,7 @@ export const Preview = () => {
 
   const handleSubmit = (customer: CustomerForm) => {
     if (id) {
-      updateClient(id, { ...customer, completeData: true, stage: 0 })
+      updateClient(id, { ...customer, completeData: true, stage: 1 })
     }
   }
 
@@ -34,8 +35,9 @@ export const Preview = () => {
   }
 
   else if (client && enviroments) {
-    const { completeData, names: clientName } = client
-    const { clientsInformation } = enviroments
+    const { completeData, names, stage } = client
+    const { clientsInformation, gifts } = enviroments
+    const [firstName = 'Tú', secondName = ''] = names.split(' ')
 
     if (!completeData && enviroments) {
       return (
@@ -44,19 +46,10 @@ export const Preview = () => {
     }
 
     return (
-      <section>
-        <h1>{clientName}</h1>
-        <hr />
-        <button>1</button>
-        <button>2</button>
-        <button>3</button>
-        <button>15%</button>
-        <br />
-        <button>4</button>
-        <button>5</button>
-        <button>6</button>
-        <button>100%</button>
-      </section>
+      <div className='bc-preview'>
+        <TicketFront customerName={`${firstName} ${secondName}`} />
+        <TicketBack gifts={gifts} stage={stage} />
+      </div>
     )
   }
   else {

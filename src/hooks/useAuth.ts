@@ -5,8 +5,8 @@ import {
   signOut
 } from 'firebase/auth'
 
-import { auth } from '../firebase/init'
-import { useUser } from '../context/UserContext'
+import { auth } from 'fire/init'
+import { useUser } from 'context/UserContext'
 
 export const useAuth = () => {
   const { addUser, setLoading } = useUser()

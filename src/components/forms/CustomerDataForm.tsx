@@ -1,6 +1,6 @@
 import { FC } from 'react'
-import { CustomerForm, CustomerInput } from '../../types/CustomerInterface'
-import { useForm } from '../../hooks/useForm'
+import { CustomerForm, CustomerInput } from 'types/CustomerInterface'
+import { useForm } from 'hooks/useForm'
 
 // const days = new Array(31).fill(0).map((_, i) => i + 1)
 // const months = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio', 'Julio', 'Agosto', 'Setiembre', 'Octubre', 'Noviembre', 'Diciembre']

@@ -1,8 +1,8 @@
 import { useState } from 'react'
 
+import { Enviroments } from 'types/EnviromentsInterface'
+import { useUser } from 'context/UserContext'
 import { useFirebase } from "./useFirebase"
-import { Enviroments } from '../types/EnviromentsInterface'
-import { useUser } from '../context/UserContext'
 
 export const useEnviroment = () => {
   const { getSnapshot } = useFirebase()

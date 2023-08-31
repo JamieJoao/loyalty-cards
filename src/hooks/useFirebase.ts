@@ -9,7 +9,7 @@ import {
   addDoc,
 } from 'firebase/firestore'
 
-import { db } from "../firebase/init"
+import { db } from "fire/init"
 
 export const useFirebase = () => {
 

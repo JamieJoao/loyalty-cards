@@ -1,5 +1,18 @@
+@import './colors.scss';
+@import './mixins.scss';
+@import './variables.scss';
+
+// COMPONENTS
+@import 'components/customs/ticket-front/styles.scss';
+@import 'components/customs/ticket-back/styles.scss';
+
+// PAGES
+@import 'pages/ticket/styles.scss';
+
 * {
   box-sizing: border-box;
+  padding: 0;
+  margin: 0;
 }
 
 th,

@@ -2,12 +2,12 @@ import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-import { useClient } from '../hooks/useClient'
-import { useAuth } from '../hooks/useAuth'
-import { useUser } from '../context/UserContext'
+import { useClient } from 'hooks/useClient'
+import { useAuth } from 'hooks/useAuth'
+import { useUser } from 'context/UserContext'
 import { WhatsappShareButton } from 'react-share'
-import { projectURL } from '../domain/constants'
-import { Modal } from '../components/modal/Modal'
+import { projectURL } from 'domain/constants'
+import { Modal } from 'components/modal/Modal'
 
 export const Dashboard = () => {
   const navigate = useNavigate()
@@ -25,7 +25,7 @@ export const Dashboard = () => {
   }, [])
 
   const handleGoToPreview = (id: string) => {
-    navigate(`/preview/${id}`)
+    navigate(`/ticket/${id}`)
   }
 
   const handleIncreasePurchase = (stage: number, id: string) => {
@@ -92,9 +92,14 @@ export const Dashboard = () => {
                 </td>
                 {user && (
                   <td>
-                    <WhatsappShareButton url={`${projectURL}preview/${id}`}>
+                    <WhatsappShareButton url={`${projectURL}ticket/${id}`}>
                       <span>Whattsap</span>
                     </WhatsappShareButton>
+                    <CopyToClipboard text={`${projectURL}ticket/${id}`}>
+                      <button>
+                        Copiar link
+                      </button>
+                    </CopyToClipboard>
                   </td>
                 )}
               </tr>
@@ -105,10 +110,10 @@ export const Dashboard = () => {
         <Modal
           onClose={() => setCustomerId(null)}
           onAccept={() => { }}>
-          <WhatsappShareButton url={`${projectURL}preview/${customerId}`}>
+          <WhatsappShareButton url={`${projectURL}ticket/${customerId}`}>
             <span>Whattsapp</span>
           </WhatsappShareButton>
-          <CopyToClipboard text={`${projectURL}preview/${customerId}`}>
+          <CopyToClipboard text={`${projectURL}ticket/${customerId}`}>
             <button>
               Copiar link
             </button>

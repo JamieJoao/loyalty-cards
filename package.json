@@ -1,5 +1,5 @@
 {
-  "homepage": "https://jamiejoao.github.io/bocato-ticket",
+  "homepage": "https://bocatostore.com/loyalty-cards/",
   "name": "bocato-cards",
   "private": true,
   "version": "0.0.0",
@@ -12,6 +12,7 @@
     "deploy": "gh-pages -d dist"
   },
   "dependencies": {
+    "classnames": "^2.3.2",
     "dotenv": "^16.3.1",
     "firebase": "^10.3.0",
     "i": "^0.3.7",
@@ -36,6 +37,7 @@
     "eslint-plugin-react-refresh": "^0.4.3",
     "gh-pages": "^6.0.0",
     "typescript": "^5.0.2",
-    "vite": "^4.4.5"
+    "vite": "^4.4.5",
+    "vite-tsconfig-paths": "^4.2.0"
   }
 }

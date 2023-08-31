@@ -1,7 +1,7 @@
 import { createContext, useState, useContext } from 'react'
 import { User } from 'firebase/auth'
 
-import { UserState } from '../types/UserInterface'
+import { UserState } from 'types/UserInterface'
 
 const state = {
   user: null,
