@@ -1,8 +1,8 @@
 import { FC } from 'react'
 
 import CupCakeImage from 'assets/images/cupcake.png'
-import HeartImage from 'assets/images/heart-2.png'
-import ChipsImage from 'assets/images/chips.png'
+import CupcakeWhiteImage from 'assets/images/cupcake-white.png'
+import NameBorderImage from 'assets/images/name-border.svg'
 
 interface TicketFrontProps {
   customerName: string
@@ -10,22 +10,24 @@ interface TicketFrontProps {
 
 export const TicketFront: FC<TicketFrontProps> = ({ customerName }) => (
   <section className='bc-card --front'>
-    <div className="bc-card__banner">
-      <img className='bc-card__banner__logo --left' src={CupCakeImage} alt="imagen de cupcake" />
-      <span className='bc-card__banner__name'>
-        <span>Bocato</span>
-        <span className='bc-card__subtitle'>
-          <img className='bc-card__heart --left' src={HeartImage} alt="imagen de un corazon" />
-          El arte de endulzar
-          <img className='bc-card__heart --right' src={HeartImage} alt="imagen de un corazon" />
-        </span>
-      </span>
+    <div className="bc-card__background">
+      <img className='bc-card__background-cupcake' src={CupcakeWhiteImage} alt='imagen de cupcake blanco de fondo' />
+      <img className='bc-card__background-cupcake' src={CupcakeWhiteImage} alt='imagen de cupcake blanco de fondo' />
+      <img className='bc-card__background-cupcake' src={CupcakeWhiteImage} alt='imagen de cupcake blanco de fondo' />
+      <img className='bc-card__background-cupcake' src={CupcakeWhiteImage} alt='imagen de cupcake blanco de fondo' />
     </div>
 
-    <span className='bc-card__title'>{customerName}</span>
-    <div className="bc-card__line-dotted"></div>
+    <div className="bc-card__banner">
+      <img className="bc-card__banner-cupcake" src={CupCakeImage} />
+      <div className="bc-card__banner-texts">
+        <p className="bc-card__banner-texts__title">Bocato</p>
+        <p className="bc-card__banner-texts__subtitle">el arte de endulzar</p>
+      </div>
 
-    <img className='bc-card__chips --left' src={ChipsImage} alt="imagen de chips de colores" />
-    <img className='bc-card__chips --right' src={ChipsImage} alt="imagen de chips de colores" />
+    </div>
+    <div className='bc-card__customer-name'>
+      <p>{customerName}</p>
+      <img src={NameBorderImage} />
+    </div>
   </section>
 )

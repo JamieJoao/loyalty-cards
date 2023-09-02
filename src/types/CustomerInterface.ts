@@ -21,6 +21,7 @@ export interface CustomerInput {
   required: boolean
   placeholder?: string
   defaultValue: string
+  icon: string
   values?: {
     label: string,
     value: string,

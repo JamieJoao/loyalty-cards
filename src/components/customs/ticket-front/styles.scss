@@ -1,111 +1,158 @@
 .bc-card {
   &.--front {
+    background-color: $color-1;
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    flex-direction: column;
-    background-color: $color-1;
-    border: 4px solid $color-white;
+    row-gap: 10px;
+
+    @include media-tablet {
+      column-gap: 20px;
+    }
 
     .bc-card {
+      position: relative;
+
+      &__background {
+        &-cupcake {
+          position: absolute;
+
+          &:nth-child(1) {
+            top: 10px;
+            left: -15px;
+            height: 90px;
+
+            @include media-tablet {
+              left: -30px;
+              height: 146px;
+            }
+          }
+
+          &:nth-child(2) {
+            bottom: 10px;
+            left: 20px;
+            height: 60px;
+
+            @include media-tablet {
+              bottom: 15px;
+              left: 30px;
+              height: 97px;
+            }
+          }
+
+          &:nth-child(3) {
+            bottom: -10px;
+            right: -5px;
+            height: 90px;
+
+            @include media-tablet {
+              right: -10px;
+              height: 146px;
+            }
+          }
+
+          &:nth-child(4) {
+            top: 5px;
+            right: 10px;
+            height: 60px;
+
+            @include media-tablet {
+              top: 10px;
+              right: 15px;
+              height: 97px;
+            }
+          }
+        }
+      }
+
       &__banner {
         display: flex;
         justify-content: center;
         align-items: center;
-        column-gap: 6px;
-        margin-bottom: 28px;
+        column-gap: 10px;
+        // outline: 1px solid red;
 
         @include media-tablet {
-          margin-bottom: 32px;
+          column-gap: 20px;
         }
 
-        &__logo {
-          height: 80px;
+        &-texts {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          color: $color-4;
+
+          &__title {
+            font-family: $font-aloja;
+            font-size: 38px;
+            line-height: 38px;
+            text-align: center;
+            // outline: 1px solid red;
+
+            @include media-tablet {
+              font-size: 70px;
+              line-height: 70px;
+              margin-left: 4px;
+            }
+          }
+
+          &__subtitle {
+            font-family: $font-montserrat;
+            text-transform: uppercase;
+            text-align: center;
+            font-size: 10px;
+            letter-spacing: 2px;
+            margin-top: 2px;
+            // outline: 1px solid red;
+
+            @include media-tablet {
+              font-weight: bold;
+              font-size: 14px;
+              letter-spacing: 3px;
+              margin-top: 4px;
+            }
+          }
+        }
+
+        &-cupcake {
+          height: 56px;
+          // outline: 1px solid red;
+
+          @include media-tablet {
+            height: 90px;
+          }
+        }
+      }
+
+      &__customer-name {
+        position: relative;
+        // outline: 1px solid red;
+
+        p {
+          font-family: $font-trocchi;
+          font-size: 18px;
+          position: absolute;
+          width: 100%;
+          text-align: center;
+          top: 50%;
+          left: 50%;
+          transform: translate(-50%, -50%);
+          color: $color-4;
+
+          @include media-tablet {
+            font-size: 32px;
+          }
+        }
+
+        img {
+          // width: 350px;
+          height: 67px;
+          // background-image: url('assets/images/name-border.svg');
 
           @include media-tablet {
             height: 110px;
           }
-        }
-
-        &__name {
-          text-align: center;
-
-          span {
-            &:nth-child(1) {
-              font-size: 30px;
-              font-family: $font-lilita;
-              color: $color-4;
-
-              @include media-tablet {
-                font-size: 40px;
-              }
-            }
-
-            &:nth-child(2) {
-              font-family: $font-sacramento;
-              font-size: 22px;
-              color: $color-4;
-              display: flex;
-              justify-content: center;
-              align-items: center;
-              column-gap: 4px;
-              margin-top: 8px;
-
-              @include media-tablet {
-                font-size: 30px;
-                line-height: 30px;
-                margin-top: 16px;
-                font-weight: bold;
-              }
-
-              .bc-card {
-                &__heart {
-                  height: 14px;
-
-                  @include media-tablet {
-                    height: 18px;
-                  }
-
-                  &.--left {
-                    transform: rotateZ(-45deg);
-                  }
-
-                  &.--right {
-                    transform: rotateZ(45deg);
-                  }
-                }
-              }
-            }
-          }
-        }
-      }
-
-      &__title {
-        font-family: $font-satisfy;
-        font-size: 40px;
-        line-height: 30px;
-        color: $color-4;
-        margin-bottom: -3px;
-
-        @include media-tablet {
-          font-size: 70px;
-          line-height: 60px;
-          margin-bottom: -10px;
-        }
-      }
-
-      &__chips {
-        position: absolute;
-        top: 0;
-        height: 100%;
-
-        &.--left {
-          left: 0;
-        }
-
-        &.--right {
-          right: 0;
-          transform: rotateY(180deg);
         }
       }
     }

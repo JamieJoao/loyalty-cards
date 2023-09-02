@@ -37,7 +37,6 @@ export const Ticket = () => {
   else if (client && enviroments) {
     const { completeData, names, stage } = client
     const { clientsInformation, cardBack } = enviroments
-    const [firstName = 'Tú', secondName = ''] = names.split(' ')
 
     if (!completeData && enviroments) {
       return (
@@ -46,16 +45,19 @@ export const Ticket = () => {
           onSubmit={handleSubmit} />
       )
     }
+    else {
+      const [firstName = 'Tú', , thirdName = ''] = names.split(' ')
 
-    return (
-      <div className='bc-preview'>
-        <TicketFront
-          customerName={`${firstName} ${secondName}`} />
-        <TicketBack
-          cardBackData={cardBack}
-          stage={stage} />
-      </div>
-    )
+      return (
+        <div className='bc-ticket'>
+          <TicketFront
+            customerName={`${firstName} ${thirdName}`} />
+          <TicketBack
+            cardBackData={cardBack}
+            stage={stage} />
+        </div>
+      )
+    }
   }
   else {
     return <h1>No se encontró información</h1>

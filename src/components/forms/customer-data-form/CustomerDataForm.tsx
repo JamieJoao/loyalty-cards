@@ -18,16 +18,23 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({ labelsMap, onSubmi
   }, {} as CustomerForm)
 
   const { form, handleChange } = useForm(initialForm)
-  console.log(form)
 
   const verifiedValuesType = (input: CustomerInput) => {
-    const { type, values, defaultValue, key, ...rest } = input
+    const { type, values, defaultValue, key, icon, ...rest } = input
 
     switch (type) {
       case 'text':
       case 'number':
       case 'date':
-        return <input type={type} value={form[key]} onChange={(e) => handleChange(e, key)} {...rest} />
+        return (
+          <input
+            className='bc-form-input__input'
+            spellCheck={false}
+            type={type}
+            value={form[key]}
+            onChange={(e) => handleChange(e, key)}
+            {...rest} />
+        )
 
       /*
     case 'date':
@@ -48,7 +55,9 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({ labelsMap, onSubmi
 
       case 'select':
         return values && (
-          <select defaultValue={form[key]} onChange={(e) => handleChange(e, key)}>
+          <select
+            className='bc-form-input__input'
+            defaultValue={form[key]} onChange={(e) => handleChange(e, key)}>
             {values.map(({ label, value, props }, index) => (
               <option
                 key={index}
@@ -73,30 +82,30 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({ labelsMap, onSubmi
   }
 
   return (
-    <>
-      <div>🎉</div>
-      <h1>¡Cuéntanos más sobre ti!</h1>
-      <p>Los descuentos se verán luego de haber completado estos datos</p>
-      <hr />
+    <div className='bc-customer-form'>
+      <div className="bc-form">
+        <span className='bc-form__title'>Cuéntanos más sobre ti </span>
+        <p className='bc-form__subtitle'>Los descuentos se verán luego de haber completado estos datos.</p>
 
-      {
-        labelsMap.map(obj => {
-          const { key, label } = obj
+        {
+          labelsMap.map(obj => {
+            const { key, label } = obj
 
-          return (
-            <div key={key}>
-              <label>{label}</label>
-              <br />
-              {verifiedValuesType(obj)}
-            </div>
-          )
-        })
-      }
+            return (
+              <div
+                className='bc-form-input'
+                key={key}>
+                <label className='bc-form-input__label'>{label}</label>
+                {verifiedValuesType(obj)}
+              </div>
+            )
+          })
+        }
 
-      <hr />
-      <button
-        disabled={isDisabled}
-        onClick={handleSubmit}>¡Empecemos la aventura!</button>
-    </>
+        <button
+          disabled={isDisabled}
+          onClick={handleSubmit}>¡Empecemos la aventura!</button>
+      </div>
+    </div>
   )
 }

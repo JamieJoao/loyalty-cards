@@ -1,6 +1,15 @@
 import { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableColumn,
+  TableRow,
+  TableCell,
+  Input
+} from "@nextui-org/react";
 
 import { useClient } from 'hooks/useClient'
 import { useAuth } from 'hooks/useAuth'
@@ -47,66 +56,79 @@ export const Dashboard = () => {
   }
 
   return (
-    <>
-      <h1>Bienvenido {user?.email}</h1>
+    <div className='bc-dashboard'>
+      {/* <h1>Bienvenido {user?.email}</h1>
       <hr />
 
       <button>Diseñar formulario de cliente</button>
       <button>Diseñar ticket</button>
       <button onClick={handleGenerateUserLink}>Generar link de usuario</button>
       <button onClick={handleLogout}>Salir</button>
-      <hr />
-      <table border={1}>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>Nombre</th>
-            <th>DNI</th>
-            <th>Cumpleaños</th>
-            <th>Ocupación</th>
-            <th>Dirección</th>
-            <th>Teléfono</th>
-            <th>Sexo</th>
-            <th>Compras</th>
-          </tr>
-        </thead>
-        <tbody>
+      <hr /> */}
+      <Input
+        isClearable
+        className="w-full sm:max-w-[44%]"
+        placeholder="Buscar por nombre..."
+      // startContent={<SearchIcon />}
+      // value={filterValue}
+      // onClear={() => onClear()}
+      // onValueChange={onSearchChange}
+      />
+      <br />
+      <Table
+        aria-label="Tabla de usuarios">
+        <TableHeader>
+          <TableColumn>#</TableColumn>
+          <TableColumn>Nombre</TableColumn>
+          <TableColumn>DNI</TableColumn>
+          <TableColumn>Cumpleaños</TableColumn>
+          <TableColumn>Ocupación</TableColumn>
+          <TableColumn>Dirección</TableColumn>
+          <TableColumn>Teléfono</TableColumn>
+          <TableColumn>Sexo</TableColumn>
+          <TableColumn>Compras</TableColumn>
+          <TableColumn>Ver</TableColumn>
+          <TableColumn>Compartir</TableColumn>
+        </TableHeader>
+        <TableBody emptyContent={"No hay usuarios que mostrar"}>
           {clients
             .filter(obj => obj.completeData)
             .map(({ names, dni, birthdayDate, occupation, address, phone, sex, stage, id }, index) => (
-              <tr key={id}>
-                <td>{index + 1}</td>
-                <td>{names}</td>
-                <td>{dni}</td>
-                <td>{birthdayDate + ''}</td>
-                <td>{occupation}</td>
-                <td>{address}</td>
-                <td>{phone}</td>
-                <td>{sex}</td>
-                <td>
+              <TableRow key={id}>
+                <TableCell>{index + 1}</TableCell>
+                <TableCell>{names}</TableCell>
+                <TableCell>{dni}</TableCell>
+                <TableCell>{birthdayDate + ''}</TableCell>
+                <TableCell>{occupation}</TableCell>
+                <TableCell>{address}</TableCell>
+                <TableCell>{phone}</TableCell>
+                <TableCell>{sex}</TableCell>
+                <TableCell>
                   {user && <button onClick={() => handleIncreasePurchase(stage, id)}>{stage}</button>}
                   {!user && <span>{stage}</span>}
-                </td>
-                <td>
+                </TableCell>
+                <TableCell>
                   <button onClick={() => handleGoToPreview(id)}>ticket</button>
-                </td>
-                {user && (
-                  <td>
-                    <WhatsappShareButton url={`${projectURL}ticket/${id}`}>
-                      <span>Whattsap</span>
-                    </WhatsappShareButton>
-                    <CopyToClipboard text={`${projectURL}ticket/${id}`}>
-                      <button>
-                        Copiar link
-                      </button>
-                    </CopyToClipboard>
-                  </td>
-                )}
-              </tr>
+                </TableCell>
+                <TableCell>
+                  {user && (
+                    <>
+                      <WhatsappShareButton url={`${projectURL}ticket/${id}`}>
+                        <span>Whattsap</span>
+                      </WhatsappShareButton>
+                      <CopyToClipboard text={`${projectURL}ticket/${id}`}>
+                        <button>
+                          Copiar link
+                        </button>
+                      </CopyToClipboard>
+                    </>
+                  )}
+                </TableCell>
+              </TableRow>
             ))}
-        </tbody>
-      </table>
-      {customerId && (
+        </TableBody>
+      </Table>
+      {/* {customerId && (
         <Modal
           onClose={() => setCustomerId(null)}
           onAccept={() => { }}>
@@ -119,7 +141,7 @@ export const Dashboard = () => {
             </button>
           </CopyToClipboard>
         </Modal>
-      )}
-    </>
+      )} */}
+    </div>
   )
 }
