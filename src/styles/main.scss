@@ -7,10 +7,13 @@
 @import './variables.scss';
 
 // COMPONENTS
+@import 'components/loading/styles.scss';
 @import 'components/customs/ticket-front/styles.scss';
 @import 'components/customs/ticket-back/styles.scss';
 @import 'components/forms/customer-data-form/styles.scss';
+@import 'components/date-picker/styles.scss';
 @import 'pages/dashboard/styles.scss';
+@import 'pages/login/styles.scss';
 
 // PAGES
 @import 'pages/ticket/styles.scss';
@@ -29,12 +32,19 @@ td {
 
 html,
 body {
-  background-color: $color-white;
+  // background-color: $color-white;
 }
 
 @font-face {
   font-family: 'Aloja Extended';
   src: url('assets/fonts/Aloja-extended.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'More Sugar';
+  src: url('assets/fonts/more-sugar-thin.ttf') format('opentype');
   font-weight: normal;
   font-style: normal;
 }

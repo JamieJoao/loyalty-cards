@@ -23,7 +23,7 @@ export const useClient = () => {
   }
 
   const getClient = (id: string) => {
-    setLoading(true)
+    // setLoading(true)
     const unsubscribe = getSnapshotByLabel<CustomerInterface>(
       customerCollectionName,
       { name: '__name__', value: id },
@@ -31,7 +31,7 @@ export const useClient = () => {
         const [entryClient] = data
 
         setClient(entryClient)
-        setLoading(false)
+        // setLoading(false)
       })
 
     return unsubscribe
@@ -39,9 +39,9 @@ export const useClient = () => {
 
   const updateClient = async (id: string, data: { [key: string]: string | boolean | number }) => {
     try {
-      setLoading(true)
+      // setLoading(true)
       await updateDocument(customerCollectionName, id, data)
-      setLoading(false)
+      // setLoading(false)
     } catch (error) {
       console.log(error, 'error in updateClient')
     }
@@ -49,9 +49,9 @@ export const useClient = () => {
 
   const addPossibleCustomer = async () => {
     try {
-      setLoading(true)
+      // setLoading(true)
       const possibleCustomer = await addDocument(customerCollectionName, {})
-      setLoading(false)
+      // setLoading(false)
 
       return possibleCustomer?.id
     } catch (error) {

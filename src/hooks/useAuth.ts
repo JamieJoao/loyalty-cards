@@ -21,20 +21,22 @@ export const useAuth = () => {
   }, [])
 
   const login = async (email: string, password: string, callback?: () => void) => {
+    setLoading(true)
+    setError(null)
     try {
-      setLoading(true)
-      
+
       const res = await signInWithEmailAndPassword(auth, email, password)
       if (res?.user) {
         localStorage.setItem('auth-token', res.user.refreshToken)
       }
 
-      setLoading(false)
       if (callback) callback()
     } catch (error) {
       console.log(error)
       setError(String(error))
     }
+
+    setLoading(false)
   }
 
   const logout = async (callback?: () => void) => {

@@ -8,7 +8,10 @@ import {
   TableColumn,
   TableRow,
   TableCell,
-  Input
+  Input,
+  Button,
+  ButtonGroup,
+  Divider
 } from "@nextui-org/react";
 
 import { useClient } from 'hooks/useClient'
@@ -16,7 +19,9 @@ import { useAuth } from 'hooks/useAuth'
 import { useUser } from 'context/UserContext'
 import { WhatsappShareButton } from 'react-share'
 import { projectURL } from 'domain/constants'
-import { Modal } from 'components/modal/Modal'
+
+import WhatsappIcon from 'assets/icons/icons8-whatsapp.svg'
+import { Modal } from 'src/components/modal/Modal';
 
 export const Dashboard = () => {
   const navigate = useNavigate()
@@ -34,7 +39,7 @@ export const Dashboard = () => {
   }, [])
 
   const handleGoToPreview = (id: string) => {
-    navigate(`/ticket/${id}`)
+    navigate(`/mi-ticket/${id}`)
   }
 
   const handleIncreasePurchase = (stage: number, id: string) => {
@@ -51,10 +56,6 @@ export const Dashboard = () => {
     if (possibleCustommerId) setCustomerId(possibleCustommerId)
   }
 
-  if (loading) {
-    return <h1>Cargando usuarios...</h1>
-  }
-
   return (
     <div className='bc-dashboard'>
       {/* <h1>Bienvenido {user?.email}</h1>
@@ -65,16 +66,14 @@ export const Dashboard = () => {
       <button onClick={handleGenerateUserLink}>Generar link de usuario</button>
       <button onClick={handleLogout}>Salir</button>
       <hr /> */}
-      <Input
-        isClearable
-        className="w-full sm:max-w-[44%]"
-        placeholder="Buscar por nombre..."
-      // startContent={<SearchIcon />}
-      // value={filterValue}
-      // onClear={() => onClear()}
-      // onValueChange={onSearchChange}
-      />
-      <br />
+
+      <ButtonGroup>
+        <Button color='primary' variant='bordered' onClick={handleGenerateUserLink}>Generar link de usuario</Button>
+        <Button color='primary' variant='bordered' onClick={handleLogout}>Salir</Button>
+      </ButtonGroup>
+
+      <Divider className="my-4" />
+
       <Table
         aria-label="Tabla de usuarios">
         <TableHeader>
@@ -104,44 +103,49 @@ export const Dashboard = () => {
                 <TableCell>{phone}</TableCell>
                 <TableCell>{sex}</TableCell>
                 <TableCell>
-                  {user && <button onClick={() => handleIncreasePurchase(stage, id)}>{stage}</button>}
+                  {user && <Button
+                    isIconOnly
+                    color='primary'
+                    variant='bordered'
+                    onClick={() => handleIncreasePurchase(stage, id)}>{stage}</Button>}
                   {!user && <span>{stage}</span>}
                 </TableCell>
                 <TableCell>
-                  <button onClick={() => handleGoToPreview(id)}>ticket</button>
+                  <Button
+                    color='primary'
+                    variant='bordered'
+                    onClick={() => handleGoToPreview(id)}>ticket</Button>
                 </TableCell>
                 <TableCell>
                   {user && (
-                    <>
-                      <WhatsappShareButton url={`${projectURL}ticket/${id}`}>
-                        <span>Whattsap</span>
-                      </WhatsappShareButton>
-                      <CopyToClipboard text={`${projectURL}ticket/${id}`}>
-                        <button>
-                          Copiar link
-                        </button>
+                    <ButtonGroup>
+                      {/* <Button isIconOnly aria-label='botón de whatsapp'>
+                        <WhatsappShareButton url={`${projectURL}mi-ticket/${id}`}>
+                          <img src={WhatsappIcon} alt='ícono de whatsapp' />
+                        </WhatsappShareButton>
+                      </Button> */}
+                      <CopyToClipboard text={`${projectURL}mi-ticket/${id}`}>
+                        <Button color='primary' variant='bordered'>Copiar</Button>
                       </CopyToClipboard>
-                    </>
+                    </ButtonGroup>
                   )}
                 </TableCell>
               </TableRow>
             ))}
         </TableBody>
       </Table>
-      {/* {customerId && (
+      {customerId && (
         <Modal
           onClose={() => setCustomerId(null)}
           onAccept={() => { }}>
-          <WhatsappShareButton url={`${projectURL}ticket/${customerId}`}>
-            <span>Whattsapp</span>
-          </WhatsappShareButton>
-          <CopyToClipboard text={`${projectURL}ticket/${customerId}`}>
-            <button>
-              Copiar link
-            </button>
+          {/* <WhatsappShareButton url={`${projectURL}mi-ticket/${customerId}`}>
+            <Button color='primary' variant='bordered'>Whatsapp</Button>
+          </WhatsappShareButton> */}
+          <CopyToClipboard text={`${projectURL}mi-ticket/${customerId}`}>
+            <Button color='primary' variant='bordered'>Copiar</Button>
           </CopyToClipboard>
         </Modal>
-      )} */}
+      )}
     </div>
   )
 }

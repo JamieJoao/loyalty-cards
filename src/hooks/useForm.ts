@@ -7,8 +7,13 @@ export const useForm = <T>(initialForm: T) => {
     setForm({ ...form, [key]: event.target.value })
   }
 
+  const handleSetValue = (key: string, value: string) => {
+    setForm({ ...form, [key]: value })
+  }
+
   return {
     form,
     handleChange,
+    handleSetValue,
   }
 }

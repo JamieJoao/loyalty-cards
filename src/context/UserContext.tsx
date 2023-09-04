@@ -2,6 +2,8 @@ import { createContext, useState, useContext } from 'react'
 import { User } from 'firebase/auth'
 
 import { UserState } from 'types/UserInterface'
+import { Loading } from 'src/components'
+import { useLocation, useMatch } from 'react-router-dom'
 
 const state = {
   user: null,
@@ -18,7 +20,9 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
   }
 
   return (
-    <UserContext.Provider value={{ ...state, user, addUser, loading, setLoading }}>
+    <UserContext.Provider
+      value={{ ...state, user, addUser, loading, setLoading }}>
+      {loading && <Loading />}
       {children}
     </UserContext.Provider>
   )

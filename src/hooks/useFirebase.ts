@@ -10,12 +10,16 @@ import {
 } from 'firebase/firestore'
 
 import { db } from "fire/init"
+import { useUser } from 'src/context/UserContext'
 
 export const useFirebase = () => {
+  const { setLoading } = useUser()
 
   const getData = async <T>(table: string) => {
+    setLoading(true)
     const data: T[] = []
     const querySnapshot = await getDocs(collection(db, table))
+    setLoading(false)
 
     querySnapshot
       .forEach(doc => {
@@ -57,21 +61,25 @@ export const useFirebase = () => {
   }
 
   const updateDocument = async (table: string, id: string, data: { [key: string]: string | boolean | number }) => {
+    setLoading(true)
     try {
       const docRef = doc(db, table, id)
       await updateDoc(docRef, data)
     } catch (error) {
       console.log([error])
     }
+    setLoading(false)
   }
 
   const addDocument = async (table: string, data?: { [key: string]: string | boolean | number }) => {
+    setLoading(true)
     try {
       const collectionRef = collection(db, table)
       return await addDoc(collectionRef, data)
     } catch (error) {
       console.log('Error in addDocument', error)
     }
+    setLoading(false)
   }
 
   return {

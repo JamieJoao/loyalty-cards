@@ -1,3 +1,3 @@
 export { Dashboard } from './dashboard/Dashboard'
-export { Login } from './Login'
+export { Login } from './login/Login'
 export { Ticket } from './ticket/Ticket'

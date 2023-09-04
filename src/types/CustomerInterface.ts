@@ -12,7 +12,7 @@ export interface CustomerInterface {
 }
 
 export type CustomerForm = {
-  [key in keyof CustomerInterface]: string
+  [key in keyof CustomerInterface]: any
 }
 
 export interface CustomerInput {
@@ -27,5 +27,5 @@ export interface CustomerInput {
     value: string,
     props?: string[]
   }[]
-  type: 'text' | 'select' | 'number' | 'date'
+  type: 'text' | 'select' | 'number' | 'date' | 'textarea'
 }

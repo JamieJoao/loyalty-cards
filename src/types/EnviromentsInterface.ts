@@ -6,8 +6,16 @@ export interface CardBack {
   subtitle: string
 }
 
+export interface Forms {
+  registerUser: {
+    buttonSubmit: string
+    customerData: CustomerInput[]
+  }
+}
+
 export interface Enviroments {
   clientsInformation: CustomerInput[]
   cardBack: CardBack
+  forms: Forms
   id: string
 }
