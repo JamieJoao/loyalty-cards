@@ -22,7 +22,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
   return (
     <UserContext.Provider
       value={{ ...state, user, addUser, loading, setLoading }}>
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
       {children}
     </UserContext.Provider>
   )

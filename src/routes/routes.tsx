@@ -13,6 +13,7 @@ import {
 import { isLoggedUser } from 'utils/functions'
 import { useUser } from 'context/UserContext'
 import { Customer } from 'src/pages/customer/Customer'
+import { TicketNotFound } from 'src/pages/ticket/TicketNotFound'
 
 export const RouterMain = () => {
   const { user } = useUser()
@@ -37,8 +38,8 @@ export const RouterMain = () => {
           } />
 
         <Route path='/mi-ticket/:id' element={<Ticket />} />
-        <Route path='/cliente/:id' element={<Customer/>} />
-        <Route element={<h1>404 bocato</h1>} />
+        <Route path='/cliente/:id' element={<Customer />} />
+        <Route path='*' element={<TicketNotFound />} />
       </Routes>
     </HashRouter>
   )

@@ -1,3 +1,9 @@
+export interface CustomerPurchase {
+  product: string
+  price: string
+  date?: string
+}
+
 export interface CustomerInterface {
   id: string
   sex: string
@@ -9,6 +15,7 @@ export interface CustomerInterface {
   names: string
   stage: number
   completeData: boolean
+  purchases: CustomerPurchase[]
 }
 
 export type CustomerForm = {

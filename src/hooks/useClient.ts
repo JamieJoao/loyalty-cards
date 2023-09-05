@@ -37,7 +37,7 @@ export const useClient = () => {
     return unsubscribe
   }
 
-  const updateClient = async (id: string, data: { [key: string]: string | boolean | number }) => {
+  const updateClient = async (id: string, data: { [key: string]: any }) => {
     try {
       // setLoading(true)
       await updateDocument(customerCollectionName, id, data)
@@ -47,11 +47,11 @@ export const useClient = () => {
     }
   }
 
-  const addPossibleCustomer = async () => {
+  const addPossibleCustomer = async (data?: { [key: string]: unknown }) => {
     try {
-      // setLoading(true)
-      const possibleCustomer = await addDocument(customerCollectionName, {})
-      // setLoading(false)
+      setLoading(true)
+      const possibleCustomer = await addDocument(customerCollectionName, data)
+      setLoading(false)
 
       return possibleCustomer?.id
     } catch (error) {

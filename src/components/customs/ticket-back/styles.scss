@@ -157,6 +157,17 @@
           }
         }
       }
+
+      &__conditions {
+        font-size: 12px;
+        font-family: $font-more;
+        color: $color-2;
+        margin-top: 8px;
+
+        @include media-tablet {
+          font-size: 16px;
+        }
+      }
     }
   }
 }

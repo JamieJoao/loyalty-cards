@@ -1,3 +1,17 @@
 .bc-dashboard {
   padding: 16px;
 }
+
+.bc-personal-message {
+  font-family: $font-more;
+}
+
+.bc {
+  &-currency-pen {
+    font-family: $font-lilita;
+  }
+
+  &-normal-icon {
+    font-size: 17px;
+  }
+}

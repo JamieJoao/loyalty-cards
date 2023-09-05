@@ -71,7 +71,7 @@ export const useFirebase = () => {
     setLoading(false)
   }
 
-  const addDocument = async (table: string, data?: { [key: string]: string | boolean | number }) => {
+  const addDocument = async (table: string, data?: { [key: string]: unknown }) => {
     setLoading(true)
     try {
       const collectionRef = collection(db, table)

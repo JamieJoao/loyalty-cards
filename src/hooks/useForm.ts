@@ -11,9 +11,14 @@ export const useForm = <T>(initialForm: T) => {
     setForm({ ...form, [key]: value })
   }
 
+  const resetForm = () => {
+    setForm({ ...initialForm })
+  }
+
   return {
     form,
     handleChange,
     handleSetValue,
+    resetForm,
   }
 }
