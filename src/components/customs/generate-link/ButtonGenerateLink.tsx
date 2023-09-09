@@ -47,11 +47,11 @@ export const ButtonGenerateLink = () => {
   return (
     <>
       <Button
-        className='fixed bottom-4 right-[50%] translate-x-[50%]'
+        className='fixed bottom-4 right-[50%] translate-x-[50%] z-10 rounded-full'
         size='lg'
         isIconOnly
         variant="shadow"
-        color="primary"
+        color="secondary"
         onClick={() => {
           setCustomerId(null)
           setShowModals({ generateLink: true })

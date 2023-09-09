@@ -58,9 +58,9 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
 
   const clientsFiltered = useMemo(() => {
     const pendingClients = clients.filter(obj => !obj.completeData)
-    const query = ({ names, dni }: CustomerInterface) => JSON.stringify({
-      names: names?.toLowerCase(),
-      dni,
+    const query = ({ purchases, names }: CustomerInterface) => JSON.stringify({
+      product: purchases[0]?.product?.toLowerCase(),
+      names,
     })
 
     return form.search
@@ -70,7 +70,7 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
 
   const handleAction = (customer: CustomerInterface, key: React.Key) => {
     setCurrentCustomer(customer)
-    
+
     switch (key) {
       case 'link':
         setShowModals({ shareLink: true })

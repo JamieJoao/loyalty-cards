@@ -1,5 +1,6 @@
 import { useEffect } from 'react'
 import {
+  Badge,
   Tab,
   Tabs,
 } from "@nextui-org/react";
@@ -26,11 +27,16 @@ export const Dashboard = () => {
   }, [])
 
   return (
-    <div className='bc-dashboard '>
+    <div className='bc-dashboard'>
       <Tabs
         fullWidth
-        aria-label='Usuarios'>
-        <Tab key='current-users' title='Registrados'>
+        aria-label='Usuarios'
+        classNames={{
+          base: 'pb-1'
+        }}>
+        <Tab
+          key='current-users'
+          title='Registrados'>
           <TabCurrentsCustomers
             clients={clients}
             updateClient={updateClient}

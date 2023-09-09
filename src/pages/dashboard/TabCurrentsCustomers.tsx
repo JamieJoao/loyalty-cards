@@ -2,7 +2,12 @@ import { useMemo, FC, useState } from 'react'
 import {
   Badge,
   Button,
+  Card,
+  CardBody,
+  CardFooter,
+  CardHeader,
   Checkbox,
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -16,9 +21,14 @@ import {
   TableRow
 } from "@nextui-org/react"
 import {
+  FaBriefcase,
+  FaCalendar,
   FaCartPlus,
   FaEllipsisV,
   FaLink,
+  FaList,
+  FaPhone,
+  FaTable,
   FaTicketAlt,
   FaTrash
 } from "react-icons/fa"
@@ -28,11 +38,12 @@ import {
 import { CustomerInterface, CustomerPurchase } from 'src/types/CustomerInterface'
 import { useForm } from 'src/hooks/useForm'
 import { useNavigate } from 'react-router-dom'
-import { getQuantityPurchases } from 'src/utils/functions'
+import { cutNames, getQuantityPurchases } from 'src/utils/functions'
 import { ModalAddPurchase } from './ModalAddPurchase'
 import moment from 'moment'
 import { Enviroments } from 'src/types/EnviromentsInterface'
 import { ModalShareLink } from './ModalShareLink'
+import { ModalCustomerDetail } from './ModalCustomerDetail'
 
 interface TabCurrentsCustomersProps {
   clients: CustomerInterface[]
@@ -46,6 +57,7 @@ interface ShowModals {
   addPurchase?: boolean
   deleteClient?: boolean
   shareLink?: boolean
+  customerDetail?: boolean
 }
 
 interface ShowSpinners {
@@ -62,12 +74,12 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
 }) => {
   const navigate = useNavigate()
   const { form, handleChange, handleSetValue } = useForm({ search: '', tableLabels: false })
-  // const [showTableLabels, setShowTableLabels] = useState(false)
   const [currentCustomer, setCurrentCustomer] = useState<CustomerInterface | null>(null)
   const [showModals, setShowModals] = useState<ShowModals>({
     addPurchase: false,
     deleteClient: false,
-    shareLink: false
+    shareLink: false,
+    customerDetail: false,
   })
   const [showSpinners, setShowSpinners] = useState<ShowSpinners>({
     addPurchase: false,
@@ -75,14 +87,15 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
   })
 
   const clientsFiltered = useMemo(() => {
+    const registersClients = clients.filter(obj => obj.completeData)
     const query = ({ names, dni }: CustomerInterface) => JSON.stringify({
       names: names?.toLowerCase(),
       dni,
     })
 
     return form.search
-      ? clients.filter(obj => `${query(obj)}`.includes(form.search.toLowerCase()))
-      : clients
+      ? registersClients.filter(obj => `${query(obj)}`.includes(form.search.toLowerCase()))
+      : registersClients
   }, [form.search, clients])
 
   const handleGoToPreview = (id: string) => {
@@ -140,6 +153,9 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
       case 'ticket':
         handleGoToPreview(customer.id)
         break
+      case 'purchase':
+        setShowModals({ addPurchase: true })
+        break
       case 'link':
         setShowModals({ shareLink: true })
         break
@@ -158,141 +174,60 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
     }
   }
 
-  const handleModalPurchase = (customer: CustomerInterface) => {
+  const handleModalCustomerDetails = (customer: CustomerInterface) => {
     setCurrentCustomer(customer)
-    setShowModals({ addPurchase: true })
+    setShowModals({ customerDetail: true })
   }
 
   return (
     <>
-      {/* <div className="flex justify-between items-center mb-4">
-        <span className="text-default-400 text-small">Total {clientsFiltered.length} clientes</span>
-        <label className="flex items-center text-default-400 text-small">
-          Filas por página:
-          <select
-            className="bg-transparent outline-none text-default-400 text-small"
-            onChange={() => { }}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-          </select>
-        </label>
-      </div> */}
-
-      <div className="grid sm:grid-cols-2">
+      <div className="flex gap-4">
         <Input
           spellCheck={false}
           classNames={{ inputWrapper: 'shadow-none' }}
           label='Buscar'
-          placeholder='Ejemplo: Pepito o 12345678'
+          placeholder='Ejemplo: Pepito o 76543210'
           type='text'
           value={form.search}
           onChange={e => handleChange(e, 'search')}
-          description='Busca a los clientes registrados por su Nombre o DNI.' />
+          isClearable
+          onClear={() => handleSetValue('search', '')} />
       </div>
 
-      {/* <Checkbox
-        className='mt-4'
-        isSelected={form.tableLabels}
-        onValueChange={value => handleSetValue('tableLabels', value)}>Mostrar todas los campos de la tabla</Checkbox> */}
+      <div className="grid mt-4 grid-cols-2 sm:grid-cols-4 gap-4">
+        {clientsFiltered.map((obj, index) => {
+          const { names, dni, birthdayDate, phone, purchases, id } = obj
+          const quantityPurchases = getQuantityPurchases(purchases)
+          const quantity = quantityPurchases < 10 ? '0' + quantityPurchases : quantityPurchases
+          const purchasesText = 'compra' + (quantityPurchases <= 1 ? '' : 's')
+          const dateParsed = moment(birthdayDate).format('DD/MM/YYYY')
 
-      {loadingClients
-        ? skeletonMemo
-        : (
-          <Table
-            removeWrapper
-            className='mt-4 overflow-x-auto pb-4'
-            aria-label="Tabla de usuarios">
-            <TableHeader>
-              <TableColumn>Nombre</TableColumn>
-              <TableColumn>Compras</TableColumn>
-              <TableColumn>DNI</TableColumn>
-              <TableColumn>Cumpleaños</TableColumn>
-              <TableColumn>Ocupación</TableColumn>
-              <TableColumn>Dirección</TableColumn>
-              <TableColumn>Teléfono</TableColumn>
-              <TableColumn>Sexo</TableColumn>
-              <TableColumn>Acciones</TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={"No hay usuarios que mostrar"}>
-              {clientsFiltered
-                .filter(obj => obj.completeData)
-                .map((customer, index) => {
-                  const { names, dni, birthdayDate, occupation, address, phone, sex, purchases, id } = customer
-                  return (
-                    <TableRow key={id}>
-                      <TableCell>{names}</TableCell>
-                      <TableCell>
-                        <Badge color='primary' content={getQuantityPurchases(purchases)}>
-                          <Button
-                            isIconOnly
-                            color='primary'
-                            variant='bordered'
-                            onClick={() => handleModalPurchase(customer)}>
-                            <FaCartPlus />
-                          </Button>
-                        </Badge>
-                      </TableCell>
-                      <TableCell>{dni}</TableCell>
-                      <TableCell>{birthdayDate + ''}</TableCell>
-                      <TableCell>{occupation}</TableCell>
-                      <TableCell>{address}</TableCell>
-                      <TableCell>{phone}</TableCell>
-                      <TableCell>{sex}</TableCell>
-                      <TableCell>
-                        {/* <ButtonGroup>
-                          <ButtonCopy
-                            url={`${projectURL}mi-ticket/${id}`} />
-                          <Button
-                            color='primary'
-                            variant='bordered'
-                            isIconOnly
-                            onClick={() => handleGoToPreview(id)}>
-                            <FaEye />
-                          </Button>
-                        </ButtonGroup> */}
-                        <div className="relative flex justify-end items-center gap-2">
-                          <Dropdown className="bg-background border-1 border-default-200">
-                            <DropdownTrigger>
-                              <Button isIconOnly radius="full" size="sm" variant="light">
-                                <FaEllipsisV className="text-default-400" />
-                              </Button>
-                            </DropdownTrigger>
-                            <DropdownMenu
-                              variant='faded'
-                              aria-labelledby='Menu de opciones'
-                              onAction={key => handleAction(customer, key)}>
-                              <DropdownItem
-                                key='ticket'
-                                startContent={<FaTicketAlt className='text-primary-400' />}>Ver ticket</DropdownItem>
-                              {/* <CopyToClipboard
-                                text={`${projectURL}mi-ticket/${id}`}>
-                                <DropdownItem
-                                  key='copy'
-                                  startContent={<FaCopy className='text-primary-400' />}>
-                                  Copiar
-                                </DropdownItem>
-                              </CopyToClipboard> */}
-                              {/* <DropdownItem
-                                key='share'
-                                startContent={<FaShareAlt className='text-success-400' />}>Compartir</DropdownItem> */}
-                              <DropdownItem
-                                key='link'
-                                startContent={<FaLink className='text-success-400' />}>Ver link</DropdownItem>
-                              <DropdownItem
-                                key='delete'
-                                startContent={<FaTrash className='text-danger-400' />}>Eliminar</DropdownItem>
-                            </DropdownMenu>
-                          </Dropdown>
-                        </div>
-                      </TableCell>
-                    </TableRow>
-                  )
-                })}
-            </TableBody>
-          </Table>
-        )}
+          return (
+            <Card
+              key={id + index}
+              className='pt-2'
+              isPressable
+              onPress={() => handleModalCustomerDetails(obj)}
+              shadow='sm'>
+              <CardHeader className="pt-2 px-4 flex-col items-start">
+                <p className="text-tiny uppercase font-bold">{cutNames(names)}</p>
+                <small className="text-default-500">{quantity} {purchasesText}</small>
+                <h4 className="font-bold text-large">{dni}</h4>
+              </CardHeader>
+              <CardFooter className='border-t-1 flex-col gap-2 items-start'>
+                <div className="flex items-center gap-4">
+                  <FaCalendar className='text-default-400' />
+                  <p className='text-sm'>{dateParsed}</p>
+                </div>
+                <div className="flex items-center gap-4">
+                  <FaPhone className='text-default-400' />
+                  <p className='text-sm'>{phone}</p>
+                </div>
+              </CardFooter>
+            </Card>
+          )
+        })}
+      </div>
 
       {currentCustomer &&
         (<>
@@ -313,6 +248,12 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
             customerId={currentCustomer.id}
             isOpen={!!showModals.shareLink}
             onClose={() => setShowModals({ shareLink: false })} />
+
+          <ModalCustomerDetail
+            currentCustomer={currentCustomer}
+            isOpen={!!showModals.customerDetail}
+            onClose={() => setShowModals({ customerDetail: false })}
+            onAction={handleAction} />
         </>)
 
       }

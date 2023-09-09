@@ -39,7 +39,9 @@ export const NavbarCustom = () => {
 
   return (
     <>
-      <Navbar isBordered>
+      <Navbar
+        position="static"
+        isBordered>
         <NavbarBrand onClick={() => navigate('')}>
           {/* <FaLink /> */}
           <p className="font-bold text-inherit">Bocato</p>
