@@ -34,6 +34,7 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
         title: 'Bocato',
         text: 'Link para tu ticket de Bocato',
         url: `${projectURL}mi-ticket/${customerId}`,
+        apps: ['com.whatsapp']
       }
 
       handleShare(data)

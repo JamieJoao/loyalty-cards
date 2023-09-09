@@ -7,7 +7,7 @@ import { useFirebase } from "./useFirebase"
 export const useEnviroment = () => {
   const { getSnapshot } = useFirebase()
   const { setLoading } = useUser()
-  const [enviroments, setEnviroments] = useState<Enviroments>()
+  const [enviroments, setEnviroments] = useState<Enviroments>({} as Enviroments)
 
   const getEnviroments = () => {
     setLoading(true)

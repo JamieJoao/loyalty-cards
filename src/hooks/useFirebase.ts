@@ -7,6 +7,7 @@ import {
   getDocs,
   updateDoc,
   addDoc,
+  deleteDoc,
 } from 'firebase/firestore'
 
 import { db } from "fire/init"
@@ -82,11 +83,23 @@ export const useFirebase = () => {
     setLoading(false)
   }
 
+  const deleteDocument = async (table: string, id: string) => {
+    setLoading(true)
+    try {
+      const docRef = doc(db, table, id)
+      return await deleteDoc(docRef)
+    } catch (error) {
+      console.log('Error in deleteDocument', error)
+    }
+    setLoading(false)
+  }
+
   return {
     getData,
     getSnapshot,
     getSnapshotByLabel,
     updateDocument,
     addDocument,
+    deleteDocument,
   }
 }

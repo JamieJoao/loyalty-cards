@@ -25,20 +25,24 @@ export const Ticket = () => {
     }
   }, [])
 
+  if (loading) {
+    return <Loading />
+  }
+
   if (client && enviroments) {
-    const { completeData, names, stage } = client
+    const { completeData, names, purchases } = client
 
     if (completeData) {
       const { cardBack } = enviroments
-      const [firstName = 'Tú', , thirdName = ''] = names.split(' ')
+      const [firstName = 'Tú', secondName, thirdName] = names.split(' ')
 
       return (
         <div className='bc-ticket'>
           <TicketFront
-            customerName={`${firstName} ${thirdName}`} />
+            customerName={`${firstName} ${thirdName ?? secondName}`} />
           <TicketBack
             cardBackData={cardBack}
-            stage={stage} />
+            purchases={purchases} />
         </div>
       )
     }

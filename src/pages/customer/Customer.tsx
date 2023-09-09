@@ -26,7 +26,7 @@ export const Customer = () => {
 
   const handleSubmit = async (customer: CustomerForm) => {
     if (id) {
-      await updateClient(id, { ...customer, completeData: true, stage: 1 })
+      await updateClient(id, { ...customer, completeData: true })
       navigate(`/mi-ticket/${id}`)
     }
   }

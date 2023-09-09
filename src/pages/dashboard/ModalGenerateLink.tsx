@@ -63,31 +63,48 @@ export const ModalGenerateLink: FC<ModalGenerateLinkProps> = ({
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>Generar Link de ticket</ModalHeader>
+            <ModalHeader>Generar nuevo link</ModalHeader>
             <ModalBody>
-              <Input
-                label='Producto'
-                placeholder='Ejemplo: Minitorta de Superman'
-                type='text'
-                variant='flat'
-                value={form.product}
-                onChange={(e) => handleChange(e, 'product')}
-                spellCheck={false}
-                isReadOnly={!!customerId}
-                startContent={<FaCookieBite className='text-default-400' />} />
+              <div className='flex flex-col gap-y-4'>
+                <p className='text-xs'>Registra la primera compra del usuario</p>
 
-              <Input
-                label='Precio'
-                placeholder='Ejemplo: 15.9'
-                type='number'
-                variant='flat'
-                value={form.price}
-                onChange={(e) => handleChange(e, 'price')}
-                spellCheck={false}
-                isReadOnly={!!customerId}
-                startContent={<span className='bc-currency-pen text-default-400'>S/</span>} />
+                <Input
+                  label='Producto'
+                  placeholder='Ejemplo: Minitorta de Superman'
+                  type='text'
+                  variant='flat'
+                  value={form.product}
+                  onChange={(e) => handleChange(e, 'product')}
+                  spellCheck={false}
+                  isReadOnly={!!customerId}
+                  startContent={<FaCookieBite className='text-default-400' />} />
 
-              {/* <Input
+                <Input
+                  label='Precio'
+                  placeholder='Ejemplo: 15.9'
+                  type='number'
+                  variant='flat'
+                  value={form.price}
+                  onChange={(e) => handleChange(e, 'price')}
+                  spellCheck={false}
+                  isReadOnly={!!customerId}
+                  startContent={<span className='bc-currency-pen text-default-400'>S/</span>} />
+
+                <Button
+                  className='mb-5'
+                  variant='bordered'
+                  color='primary'
+                  isDisabled={isDisabled}
+                  spinner={<Spinner size='sm' />}
+                  isLoading={spinners.generateLink}
+                  onClick={() => {
+                    onSubmit(form)
+                  }}
+                  startContent={<FaLink />}>
+                  Generar
+                </Button>
+
+                {/* <Input
                 label='DNI'
                 placeholder='Ejemplo: 12345678'
                 type='number'
@@ -98,21 +115,9 @@ export const ModalGenerateLink: FC<ModalGenerateLinkProps> = ({
                 isReadOnly={!!customerId}
                 startContent={<FaIdCard className='text-default-400' />}
                 pattern='\d*' /> */}
+              </div>
             </ModalBody>
-            <ModalFooter>
-              <Button
-                variant='bordered'
-                color='primary'
-                isDisabled={isDisabled}
-                spinner={<Spinner size='sm' />}
-                isLoading={spinners.generateLink}
-                onClick={() => {
-                  onSubmit(form)
-                }}
-                startContent={<FaLink />}>
-                Generar
-              </Button>
-            </ModalFooter>
+            {/* <ModalFooter></ModalFooter> */}
           </>
         )}
       </ModalContent>

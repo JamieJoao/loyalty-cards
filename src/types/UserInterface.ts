@@ -5,4 +5,6 @@ export interface UserState {
   addUser: (user: User | null) => void
   loading: boolean
   setLoading: (loading: boolean) => void
+  token: string | null
+  setToken: (token: string | null) => void
 }

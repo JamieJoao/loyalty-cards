@@ -53,9 +53,6 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({
   const { form, handleChange, handleSetValue } = useForm(initialForm)
   const { loading } = useUser()
 
-  console.log(form)
-
-
   const verifiedValuesType = (input: CustomerInput) => {
     const { type, label, values, defaultValue, key, icon, ...rest } = input
 

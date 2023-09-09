@@ -2,6 +2,7 @@ export interface CustomerPurchase {
   product: string
   price: string
   date?: string
+  used?: boolean
 }
 
 export interface CustomerInterface {
@@ -13,7 +14,6 @@ export interface CustomerInterface {
   address: string
   dni: number
   names: string
-  stage: number
   completeData: boolean
   purchases: CustomerPurchase[]
 }

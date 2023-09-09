@@ -1,4 +1,4 @@
-import { useState, ChangeEvent } from 'react'
+import { useState, ChangeEvent, ReactNode } from 'react'
 
 export const useForm = <T>(initialForm: T) => {
   const [form, setForm] = useState<T>(initialForm)
@@ -7,7 +7,7 @@ export const useForm = <T>(initialForm: T) => {
     setForm({ ...form, [key]: event.target.value })
   }
 
-  const handleSetValue = (key: string, value: string) => {
+  const handleSetValue = (key: string, value: ReactNode) => {
     setForm({ ...form, [key]: value })
   }
 

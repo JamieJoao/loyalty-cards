@@ -9,7 +9,7 @@ import { auth } from 'fire/init'
 import { useUser } from 'context/UserContext'
 
 export const useAuth = () => {
-  const { addUser, setLoading } = useUser()
+  const { addUser, setLoading, setToken } = useUser()
   const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
@@ -27,7 +27,7 @@ export const useAuth = () => {
 
       const res = await signInWithEmailAndPassword(auth, email, password)
       if (res?.user) {
-        localStorage.setItem('auth-token', res.user.refreshToken)
+        setToken(res.user.refreshToken)
       }
 
       if (callback) callback()
@@ -44,7 +44,7 @@ export const useAuth = () => {
       setLoading(true)
 
       await signOut(auth)
-      localStorage.removeItem('auth-token')
+      setToken(null)
 
       setLoading(false)
       if (callback) callback()

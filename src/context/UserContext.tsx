@@ -1,19 +1,32 @@
-import { createContext, useState, useContext } from 'react'
+import { createContext, useState, useContext, useEffect } from 'react'
 import { User } from 'firebase/auth'
 
 import { UserState } from 'types/UserInterface'
-import { Loading } from 'src/components'
-import { useLocation, useMatch } from 'react-router-dom'
 
 const state = {
   user: null,
+  token: null
 }
 const UserContext = createContext({} as UserState)
 export const useUser = () => useContext(UserContext)
 
 export const UserProvider = ({ children }: { children: JSX.Element }) => {
   const [user, setUser] = useState<User | null>(null)
+  const [token, setToken] = useState<string | null>(localStorage.getItem('auth-token'))
   const [loading, setLoading] = useState<boolean>(false)
+
+  useEffect(() => {
+    localStorage.clear()
+  }, [])
+
+  useEffect(() => {
+    if (token) {
+      localStorage.setItem('auth-token', token)
+    }
+    else {
+      localStorage.removeItem('auth-token')
+    }
+  }, [token])
 
   const addUser = (user: User | null) => {
     setUser(user)
@@ -21,8 +34,7 @@ export const UserProvider = ({ children }: { children: JSX.Element }) => {
 
   return (
     <UserContext.Provider
-      value={{ ...state, user, addUser, loading, setLoading }}>
-      {/* {loading && <Loading />} */}
+      value={{ ...state, user, addUser, loading, setLoading, token, setToken }}>
       {children}
     </UserContext.Provider>
   )

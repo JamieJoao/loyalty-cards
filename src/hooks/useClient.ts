@@ -7,8 +7,8 @@ import { useUser } from 'context/UserContext'
 import { customerCollectionName } from 'domain/constants'
 
 export const useClient = () => {
-  const { getSnapshot, getSnapshotByLabel, updateDocument, addDocument } = useFirebase()
-  const { setLoading } = useUser()
+  const { getSnapshot, getSnapshotByLabel, updateDocument, addDocument, deleteDocument } = useFirebase()
+  const { loading, setLoading } = useUser()
   const [clients, setClients] = useState<CustomerInterface[]>([])
   const [client, setClient] = useState<CustomerInterface | null>(null)
 
@@ -23,7 +23,6 @@ export const useClient = () => {
   }
 
   const getClient = (id: string) => {
-    // setLoading(true)
     const unsubscribe = getSnapshotByLabel<CustomerInterface>(
       customerCollectionName,
       { name: '__name__', value: id },
@@ -31,7 +30,6 @@ export const useClient = () => {
         const [entryClient] = data
 
         setClient(entryClient)
-        // setLoading(false)
       })
 
     return unsubscribe
@@ -39,11 +37,17 @@ export const useClient = () => {
 
   const updateClient = async (id: string, data: { [key: string]: any }) => {
     try {
-      // setLoading(true)
       await updateDocument(customerCollectionName, id, data)
-      // setLoading(false)
     } catch (error) {
       console.log(error, 'error in updateClient')
+    }
+  }
+
+  const deleteClient = async (id: string) => {
+    try {
+      await deleteDocument(customerCollectionName, id)
+    } catch (error) {
+      console.log(error, 'error in deleteClient')
     }
   }
 
@@ -60,12 +64,14 @@ export const useClient = () => {
   }
 
   return {
+    loading, 
     clients,
     getClients,
 
     client,
     getClient,
     updateClient,
+    deleteClient,
     addPossibleCustomer,
   }
 

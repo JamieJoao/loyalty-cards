@@ -1,20 +1,25 @@
-import { FC, useState, useEffect } from 'react'
+import { FC, useState, useEffect, useMemo } from 'react'
 import {
   Button,
   Divider,
   Input,
+  Listbox,
+  ListboxItem,
   Modal,
   ModalBody,
   ModalContent,
   ModalFooter,
   ModalHeader,
+  ScrollShadow,
   Spinner,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  Tabs,
 } from "@nextui-org/react"
 import {
   FaTrash,
@@ -26,9 +31,12 @@ import {
 
 import { CustomerInterface, CustomerPurchase } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
+import { cutNames, filterValidPurchases } from 'src/utils/functions'
+import { MAX_HEIGHT_PER_ITEM, MAX_ITEMS } from 'src/domain/constants'
+import classNames from 'classnames'
 
 interface ModalAddPurchaseProps {
-  onSubmit: (form: { product: string, price: string }) => void
+  onSubmit: (form: { product: string, price: string }) => Promise<void>
   onClose: () => void
   handleRemovePurchase: (purchases: CustomerPurchase[]) => Promise<void>
   currentCustomer: CustomerInterface | null
@@ -49,19 +57,21 @@ export const ModalAddPurchase: FC<ModalAddPurchaseProps> = ({
   isOpen,
   spinners,
 }) => {
-  const { form, handleChange, handleSetValue, resetForm } = useForm({
+  const { form, handleChange, resetForm } = useForm({
     product: '',
     price: '',
   })
-  const [showPurchasesList, setShowPurchasesList] = useState<boolean>(false)
   const [spinRemovePurchase, setSpinRemovePurchase] = useState<SpinRemovePurchase | null>(null)
 
   useEffect(() => {
     if (isOpen) {
       resetForm()
-      setShowPurchasesList(false)
     }
   }, [isOpen])
+
+  const validPurchasesMemo = useMemo(() => (
+    filterValidPurchases(currentCustomer?.purchases)
+  ), [currentCustomer])
 
   const handlePrepareRemovePurchase = async (index: number) => {
     if (currentCustomer) {
@@ -77,90 +87,103 @@ export const ModalAddPurchase: FC<ModalAddPurchaseProps> = ({
     <Modal
       isOpen={isOpen && Boolean(currentCustomer)}
       onOpenChange={onClose}
+      placement='top'
       backdrop='blur'>
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>Agregar compra</ModalHeader>
+            <ModalHeader>Compras de {cutNames(currentCustomer?.names)}</ModalHeader>
             <ModalBody>
-              <Input
-                label='Nombre'
-                placeholder='Ejemplo: Minitorta de Superman'
-                type='text'
-                variant='flat'
-                startContent={<FaCookieBite className='text-default-400' />}
-                value={form.product}
-                onChange={(e) => handleChange(e, 'product')}
-                spellCheck={false} />
+              <div className="flex flex-col w-full">
+                <Tabs
+                  fullWidth
+                  aria-label='Tabs de compras'>
+                  <Tab key='new-purchase' title='Nueva'>
+                    <div className="flex flex-col gap-y-4">
+                      <Input
+                        label='Nombre'
+                        placeholder='Ejemplo: Minitorta de Superman'
+                        type='text'
+                        variant='flat'
+                        isReadOnly={spinners.addPurchase}
+                        startContent={<FaCookieBite className='text-default-400' />}
+                        value={form.product}
+                        onChange={(e) => handleChange(e, 'product')}
+                        spellCheck={false} />
 
-              <Input
-                label='Precio'
-                placeholder='Ejemplo: 15.9'
-                type='number'
-                variant='flat'
-                startContent={<span className='bc-currency-pen text-default-400'>S/</span>}
-                value={form.price}
-                onChange={(e) => handleChange(e, 'price')}
-                spellCheck={false} />
+                      <Input
+                        label='Precio'
+                        placeholder='Ejemplo: 15.9'
+                        type='number'
+                        variant='flat'
+                        isReadOnly={spinners.addPurchase}
+                        startContent={<span className='bc-currency-pen text-default-400'>S/</span>}
+                        value={form.price}
+                        onChange={(e) => handleChange(e, 'price')}
+                        spellCheck={false} />
 
-              {showPurchasesList && (
-                <>
-                  <Divider />
-                  <Table
-                    removeWrapper
-                    aria-label='tabla para mostrar las compras del cliente'>
-                    <TableHeader>
-                      <TableColumn>Producto</TableColumn>
-                      <TableColumn className='text-right'>Acción</TableColumn>
-                    </TableHeader>
-                    <TableBody emptyContent='El cliente no tiene compras'>
-                      {(currentCustomer?.purchases ?? []).map((obj, index) => (
-                        <TableRow key={index}>
-                          <TableCell>
-                            <div className="flex flex-col">
-                              <p className="text-bold text-sm capitalize">{obj.product}</p>
-                              <p className="text-bold text-sm capitalize text-default-400">S/ {obj.price}</p>
-                            </div>
-                          </TableCell>
-                          <TableCell className='text-right'>
-                            <Button
-                              size='sm'
-                              color='warning'
-                              variant='bordered'
-                              aria-label='Borrar compra'
-                              spinner={<Spinner color='warning' size='sm' />}
-                              isLoading={spinRemovePurchase?.status && spinRemovePurchase.data === index}
-                              onClick={() => handlePrepareRemovePurchase(index)}>
-                              <FaTrash />
-                            </Button>
-                          </TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </>
-              )}
+                      <Button
+                        className='mb-2'
+                        variant='bordered'
+                        color='primary'
+                        isDisabled={!form.product || !form.price}
+                        spinner={<Spinner size='sm' />}
+                        isLoading={spinners.addPurchase}
+                        onClick={async () => {
+                          await onSubmit(form)
+                          resetForm()
+                        }}
+                        startContent={<FaPlus />}>
+                        Guardar
+                      </Button>
+                    </div>
+                  </Tab>
+                  <Tab key='history' title='Historial'>
+                    <div
+                      className={classNames(
+                        'overflow-auto',
+                        `max-h-[${MAX_HEIGHT_PER_ITEM * MAX_ITEMS}px]`
+                      )}>
+                      <Table
+                        isStriped
+                        removeWrapper
+                        hideHeader
+                        aria-label='tabla para mostrar las compras del cliente'>
+                        <TableHeader>
+                          <TableColumn>Producto</TableColumn>
+                          <TableColumn className='text-right'>Acción</TableColumn>
+                        </TableHeader>
+                        <TableBody emptyContent='El cliente no tiene compras'>
+                          {validPurchasesMemo.map((obj, index) => (
+                            <TableRow key={index}>
+                              <TableCell>
+                                <div className="flex flex-col">
+                                  <p className="text-bold text-sm capitalize">{obj.product}</p>
+                                  <p className="text-bold text-sm capitalize text-default-400">S/ {obj.price}</p>
+                                </div>
+                              </TableCell>
+                              <TableCell className='text-right'>
+                                <Button
+                                  size='sm'
+                                  color='warning'
+                                  variant='bordered'
+                                  aria-label='Borrar compra'
+                                  spinner={<Spinner color='warning' size='sm' />}
+                                  isLoading={spinRemovePurchase?.status && spinRemovePurchase.data === index}
+                                  onClick={() => handlePrepareRemovePurchase(index)}>
+                                  <FaTrash />
+                                </Button>
+                              </TableCell>
+                            </TableRow>
+                          ))}
+                        </TableBody>
+                      </Table>
+                    </div>
+                  </Tab>
+                </Tabs>
+              </div>
             </ModalBody>
-            <ModalFooter>
-              <Button
-                variant='bordered'
-                color='secondary'
-                startContent={<FaList />}
-                onClick={() => setShowPurchasesList(!showPurchasesList)}>
-                {showPurchasesList ? 'Ocultar' : 'Mostrar'} lista de compras
-              </Button>
-
-              <Button
-                variant='bordered'
-                color='primary'
-                isDisabled={!form.product || !form.price}
-                spinner={<Spinner size='sm' />}
-                isLoading={spinners.addPurchase}
-                onClick={() => onSubmit(form)}
-                startContent={<FaPlus />}>
-                Guardar
-              </Button>
-            </ModalFooter>
+            {/* <ModalFooter></ModalFooter> */}
           </>
         )}
       </ModalContent>
