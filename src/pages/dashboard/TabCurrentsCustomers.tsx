@@ -141,9 +141,14 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
   }
 
   const skeletonMemo = useMemo(() => (
-    <Skeleton className='rounded-lg mt-4 bg-default-100'>
-      <div className="h-[40px]"></div>
-    </Skeleton>
+    <>
+      <Skeleton className='rounded-large bg-default-100'>
+        <div className="h-[164.19px]"></div>
+      </Skeleton>
+      <Skeleton className='rounded-large bg-default-100'>
+        <div className="h-[164.19px]"></div>
+      </Skeleton>
+    </>
   ), [])
 
   const handleAction = (customer: CustomerInterface, key: React.Key) => {
@@ -194,39 +199,58 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
           onClear={() => handleSetValue('search', '')} />
       </div>
 
-      <div className="grid mt-4 grid-cols-2 sm:grid-cols-4 gap-4">
-        {clientsFiltered.map((obj, index) => {
-          const { names, dni, birthdayDate, phone, purchases, id } = obj
-          const quantityPurchases = getQuantityPurchases(purchases)
-          const quantity = quantityPurchases < 10 ? '0' + quantityPurchases : quantityPurchases
-          const purchasesText = 'compra' + (quantityPurchases <= 1 ? '' : 's')
-          const dateParsed = moment(birthdayDate).format('DD/MM/YYYY')
+      <div className="flex justify-between items-center mt-4">
+        <span className="text-default-400 text-small">Total {clientsFiltered.length} users</span>
+        {/* <label className="flex items-center text-default-400 text-small">
+          Rows per page:
+          <select
+            className="bg-transparent outline-none text-default-400 text-small"
+            onChange={() => { }}
+          >
+            <option value="5">5</option>
+            <option value="10">10</option>
+            <option value="15">15</option>
+          </select>
+        </label> */}
+      </div>
 
-          return (
-            <Card
-              key={id + index}
-              className='pt-2'
-              isPressable
-              onPress={() => handleModalCustomerDetails(obj)}
-              shadow='sm'>
-              <CardHeader className="pt-2 px-4 flex-col items-start">
-                <p className="text-tiny uppercase font-bold">{cutNames(names)}</p>
-                <small className="text-default-500">{quantity} {purchasesText}</small>
-                <h4 className="font-bold text-large">{dni}</h4>
-              </CardHeader>
-              <CardFooter className='border-t-1 flex-col gap-2 items-start'>
-                <div className="flex items-center gap-4">
-                  <FaCalendar className='text-default-400' />
-                  <p className='text-sm'>{dateParsed}</p>
-                </div>
-                <div className="flex items-center gap-4">
-                  <FaPhone className='text-default-400' />
-                  <p className='text-sm'>{phone}</p>
-                </div>
-              </CardFooter>
-            </Card>
-          )
-        })}
+      <div className="grid mt-4 grid-cols-2 sm:grid-cols-4 gap-4">
+        {loadingClients
+          ? skeletonMemo
+          : (
+            clientsFiltered.map((obj, index) => {
+              const { names, dni, birthdayDate, phone, purchases, id } = obj
+              const quantityPurchases = getQuantityPurchases(purchases)
+              const quantity = quantityPurchases < 10 ? '0' + quantityPurchases : quantityPurchases
+              const purchasesText = 'compra' + (quantityPurchases <= 1 ? '' : 's')
+              const dateParsed = moment(birthdayDate).format('DD/MM/YYYY')
+
+              return (
+                <Card
+                  key={id + index}
+                  className='pt-2'
+                  isPressable
+                  onPress={() => handleModalCustomerDetails(obj)}
+                  shadow='sm'>
+                  <CardHeader className="pt-2 px-4 flex-col items-start">
+                    <p className="text-tiny uppercase font-bold">{cutNames(names)}</p>
+                    <small className="text-default-500">{quantity} {purchasesText}</small>
+                    <h4 className="font-bold text-large">{dni}</h4>
+                  </CardHeader>
+                  <CardFooter className='border-t-1 flex-col gap-2 items-start'>
+                    <div className="flex items-center gap-4">
+                      <FaCalendar className='text-default-400' />
+                      <p className='text-sm'>{dateParsed}</p>
+                    </div>
+                    <div className="flex items-center gap-4">
+                      <FaPhone className='text-default-400' />
+                      <p className='text-sm'>{phone}</p>
+                    </div>
+                  </CardFooter>
+                </Card>
+              )
+            })
+          )}
       </div>
 
       {currentCustomer &&

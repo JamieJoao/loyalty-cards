@@ -6,6 +6,7 @@ import { ModalShareLink } from 'src/pages/dashboard/ModalShareLink'
 import { useClient } from 'src/hooks/useClient'
 import { CustomerPurchase } from 'src/types/CustomerInterface'
 import moment from 'moment'
+import { useNavigate } from 'react-router-dom'
 
 interface ShowModals {
   generateLink?: boolean
@@ -17,6 +18,7 @@ interface ShowSpinners {
 }
 
 export const ButtonGenerateLink = () => {
+  const navigate = useNavigate()
   const { addPossibleCustomer } = useClient()
 
   const [customerId, setCustomerId] = useState<string | null>(null)
@@ -53,8 +55,9 @@ export const ButtonGenerateLink = () => {
         variant="shadow"
         color="secondary"
         onClick={() => {
-          setCustomerId(null)
-          setShowModals({ generateLink: true })
+          navigate('generate-link')
+          // setCustomerId(null)
+          // setShowModals({ generateLink: true })
         }}>
         <FaLink />
       </Button>
