@@ -24,9 +24,9 @@ export default defineConfig(({ command }) => {
     },
   }
 
-  if (command !== 'serve') {
-    config.base = '/loyalty-cards/'
-  }
+  // if (command !== 'serve') {
+  //   config.base = '/loyalty-cards/'
+  // }
 
   return config
 })

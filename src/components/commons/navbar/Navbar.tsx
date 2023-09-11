@@ -10,11 +10,16 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react"
+import { onAuthStateChanged } from 'firebase/auth'
 import { FaChevronDown, FaList } from 'react-icons/fa'
 
 import { useAuth } from "src/hooks/useAuth"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useUser } from "src/context/UserContext"
+
+import ProfileImage from 'assets/images/profile.jpg'
+import { useEffect } from "react"
+import { auth } from "src/fire/init"
 
 export const NavbarCustom = () => {
   const { logout } = useAuth()
@@ -32,6 +37,15 @@ export const NavbarCustom = () => {
       }
     },
   ]
+
+  useEffect(() => {
+    const unsub = onAuthStateChanged(auth, user => {
+      if (!user) {
+        logout()
+      }
+    })
+    return () => unsub()
+  }, [])
 
   const handleLogout = () => {
     logout()
@@ -89,20 +103,6 @@ export const NavbarCustom = () => {
 
           </NavbarItem>
         </NavbarContent>
-        {/* <NavbarContent justify="end">
-        <NavbarItem className="hidden lg:flex">
-
-        </NavbarItem>
-        <NavbarItem className='hover:bg-transparent'>
-          <Button
-            color="secondary"
-            variant="flat"
-            startContent={<TbLogout className='text-xl' />}
-            onClick={handleLogout}>
-            Salir
-          </Button>
-        </NavbarItem>
-      </NavbarContent> */}
         <NavbarContent as="div" className="items-center" justify="end">
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
@@ -113,7 +113,8 @@ export const NavbarCustom = () => {
                 color="primary"
                 name="Jason Hughes"
                 size="sm"
-                src="https://randomuser.me/api/portraits/men/72.jpg"
+                src={ProfileImage}
+                alt="imagen de foto de perfil"
               />
             </DropdownTrigger>
             <DropdownMenu

@@ -52,7 +52,7 @@ export const Product = () => {
   const getProductsRows = (product: ProductInterface) => (
     <TableRow key={product.id}>
       <TableCell>{product.name}</TableCell>
-      <TableCell>S/ {product.price.toFixed(2)}</TableCell>
+      <TableCell>S/ {(product.price ?? 0).toFixed(2)}</TableCell>
       <TableCell className="text-right">
         <div className="relative flex justify-end items-center gap-2">
           <Dropdown className="bg-background border-1 border-default-200">

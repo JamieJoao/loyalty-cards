@@ -55,7 +55,7 @@ interface ShowModals {
 }
 
 const calculatePrice = (price: string, quantity: number) => (
-  (Number(price) * quantity).toFixed(2)
+  (Number(price ?? '') * quantity).toFixed(2)
 )
 
 export const GenerateLink = () => {
@@ -96,7 +96,7 @@ export const GenerateLink = () => {
   useEffect(() => {
     if (formPurchase.productId.length) {
       const productRecovered = products.find(obj => obj.id === formPurchase.productId[0])
-      if (productRecovered) handleSetValuePurchase('price', productRecovered.price)
+      if (productRecovered) handleSetValuePurchase('price', productRecovered.price ?? '')
     }
     else {
       handleSetValuePurchase('price', '')
@@ -199,7 +199,7 @@ export const GenerateLink = () => {
       const purchaseDoc = {
         customer: getCustomerReference(id),
         names,
-        phone,
+        phone: phone ?? '',
         products: purchaseList,
         date: Timestamp.fromDate(moment(form.date).toDate()),
         used: false,
@@ -215,7 +215,7 @@ export const GenerateLink = () => {
 
   return (
     <>
-      {/* <span>{JSON.stringify(form, null, 2)}</span> */}
+      {/* <span>{JSON.stringify(formPurchase, null, 2)}</span> */}
       <div className="bc-generate-link">
         <h3 className="text-md mb-4">
           {hasCustomerInRoute
@@ -242,6 +242,7 @@ export const GenerateLink = () => {
               startContent={<FaSearch className='text-default-400' />} />
 
             <Select
+              items={productsFiltered}
               isLoading={loading}
               fullWidth
               variant='flat'
@@ -252,14 +253,14 @@ export const GenerateLink = () => {
               onChange={handleChangeProduct}
               startContent={<BiCake className='text-default-400' />}
             >
-              {productsFiltered.map(product => (
+              {product => (
                 <SelectItem
                   key={product.id}
                   value={product.id}
-                  description={<span className='text-default-400'>s/ {product.price.toFixed(2)}</span>}>
+                  description={<span className='text-default-400'>s/ {product.price?.toFixed(2) ?? 0}</span>}>
                   {product.name}
                 </SelectItem>
-              ))}
+              )}
             </Select>
 
             <div className="flex gap-4">

@@ -1,4 +1,3 @@
-import { CustomerPurchase } from "src/types/CustomerInterface"
 import { PurchaseInterface, PurchaseProductsInterface } from "src/types/PurchaseInterface"
 
 export const isLoggedUser = () => {
@@ -16,7 +15,7 @@ export const filterValidPurchases = (purchases: PurchaseInterface[] = []): Purch
 )
 
 export const cutNames = (fullname: string = ''): string => {
-  const [firstName, _, secondName = ''] = fullname.split(' ')
+  const [firstName, secondName = ''] = fullname.split(' ')
   return `${firstName} ${secondName}`
 }
 

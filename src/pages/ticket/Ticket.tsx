@@ -4,10 +4,10 @@ import { Navigate, useParams } from 'react-router-dom'
 import { useClient } from 'hooks/useClient'
 import { useEnviroment } from 'hooks/useEnviroment'
 import { useUser } from 'context/UserContext'
-import { CustomerDataForm, Loading, TicketFront } from 'components/index'
+import { Loading, TicketFront } from 'components/index'
 import { TicketBack } from 'components/customs/ticket-back/TicketBack'
-import { CustomerForm } from 'types/CustomerInterface'
 import { TicketNotFound } from './TicketNotFound'
+import { cutNames } from 'src/utils/functions'
 
 export const Ticket = () => {
   const { id } = useParams()
@@ -25,6 +25,8 @@ export const Ticket = () => {
     }
   }, [])
 
+  // console.log(client)
+
   if (loading || loadingClient) {
     return <Loading />
   }
@@ -34,12 +36,11 @@ export const Ticket = () => {
 
     if (completeData) {
       const { cardBack } = enviroments
-      const [firstName = 'Tú', secondName, thirdName] = names.split(' ')
 
       return (
         <div className='bc-ticket'>
           <TicketFront
-            customerName={`${firstName} ${thirdName ?? secondName}`} />
+            customerName={cutNames(names)} />
           <TicketBack
             cardBackData={cardBack}
             purchases={purchases} />

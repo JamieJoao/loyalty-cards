@@ -25,6 +25,7 @@ import {
   FaCalendar,
   FaCartPlus,
   FaEllipsisV,
+  FaIdCard,
   FaLink,
   FaList,
   FaPhone,
@@ -88,11 +89,11 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
   })
 
   const clientsFiltered = useMemo(() => {
-    console.log(clients)
     const registersClients = clients.filter(obj => obj.completeData)
-    const query = ({ names, dni }: CustomerInterface) => JSON.stringify({
+    const query = ({ names, dni, phone }: CustomerInterface) => JSON.stringify({
       names: names?.toLowerCase(),
       dni,
+      phone,
     })
 
     return form.search
@@ -229,16 +230,16 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
                   <CardHeader className="pt-2 px-4 flex-col items-start">
                     <p className="text-tiny uppercase font-bold">{cutNames(names)}</p>
                     <small className="text-default-500">{quantity} {purchasesText}</small>
-                    <h4 className="font-bold text-large">{dni}</h4>
+                    <h4 className="font-bold text-large">{phone}</h4>
                   </CardHeader>
                   <CardFooter className='border-t-1 flex-col gap-2 items-start'>
                     <div className="flex items-center gap-4">
-                      <FaCalendar className='text-default-400' />
-                      <p className='text-sm'>{dateParsed}</p>
+                      <FaIdCard className='text-default-400' />
+                      <p className='text-sm'>{dni}</p>
                     </div>
                     <div className="flex items-center gap-4">
-                      <FaPhone className='text-default-400' />
-                      <p className='text-sm'>{phone}</p>
+                      <FaCalendar className='text-default-400' />
+                      <p className='text-sm'>{dateParsed}</p>
                     </div>
                   </CardFooter>
                 </Card>

@@ -15,6 +15,7 @@ import {
   TableRow,
 } from "@nextui-org/react"
 import {
+  FaCartPlus,
   FaCopy,
   FaEllipsisV,
   FaLink,
@@ -27,6 +28,7 @@ import { ModalDelete } from 'src/components'
 import { ModalShareLink } from './ModalShareLink'
 import moment from 'moment'
 import { DATE_FORMAT_SPECIAL } from 'src/domain/constants'
+import { useNavigate } from 'react-router-dom'
 
 interface TabPendingCustomersProps {
   clients: CustomerInterface[]
@@ -48,6 +50,7 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
   loadingLinks,
   deleteClient,
 }) => {
+  const navigate = useNavigate()
   const { form, handleChange } = useForm({ search: '' })
   const [currentCustomer, setCurrentCustomer] = useState<CustomerInterface | null>(null)
   const [showModals, setShowModals] = useState<ShowModals>({
@@ -58,11 +61,8 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
     deleteClient: false,
   })
 
-  console.log(clients)
-
   const clientsFiltered = useMemo(() => {
     const pendingClients = clients.filter(obj => !obj.completeData)
-
     const query = ({ names, phone }: CustomerInterface) => JSON.stringify({
       names,
       phone,
@@ -80,6 +80,12 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
       case 'link':
         setShowModals({ shareLink: true })
         break
+      case 'purchase':
+        if (currentCustomer) {
+          const { names, phone, id } = currentCustomer
+          navigate('generate-link', { state: { names, phone, id } })
+        }
+        break
       case 'delete':
         setShowModals({ deleteClient: true })
         break
@@ -90,11 +96,15 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
     const { purchases } = value
     const [firtPurchase] = purchases ?? []
 
-    return firtPurchase && (
+    return (
       <TableRow key={index}>
         <TableCell>{value.names ?? 'NO GUARDADO'}</TableCell>
         <TableCell>{value.phone ?? 'NO GUARDADO'}</TableCell>
-        <TableCell>{moment(firtPurchase.date).format(DATE_FORMAT_SPECIAL)}</TableCell>
+        <TableCell>
+          {firtPurchase
+            ? moment(firtPurchase.date).format(DATE_FORMAT_SPECIAL)
+            : 'NO GUARDADO'}
+        </TableCell>
         <TableCell className='text-right'>
           <div className="relative flex justify-end items-center gap-2">
             <Dropdown className="bg-background border-1 border-default-200">
@@ -110,6 +120,9 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
                 <DropdownItem
                   key='link'
                   startContent={<FaLink className='text-success-400' />}>Ver link</DropdownItem>
+                <DropdownItem
+                  key='purchase'
+                  startContent={<FaCartPlus className='text-primary-400' />}>Agregar compra</DropdownItem>
                 <DropdownItem
                   key='delete'
                   startContent={<FaTrash className='text-danger-400' />}>Eliminar</DropdownItem>
