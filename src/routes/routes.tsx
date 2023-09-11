@@ -2,7 +2,7 @@ import { HashRouter, Navigate, useRoutes, BrowserRouter } from "react-router-dom
 
 import { NavbarCustom } from "src/components/commons/navbar/Navbar"
 import { useUser } from "src/context/UserContext"
-import { Dashboard, Login, Ticket } from "src/pages"
+import { Dashboard, Login, Product, Ticket } from "src/pages"
 import { Customer } from "src/pages/customer/Customer"
 import { EditUserForm } from "src/pages/edit-user-form/EditUserForm"
 import { GenerateLink } from "src/pages/generate-link/GenerateLink"
@@ -29,6 +29,16 @@ const routesArray = (isAuthenticated: boolean) => [
       {
         path: 'generate-link',
         element: getAuthRoute(<GenerateLink />, isAuthenticated),
+        children: [
+          {
+            path: 'id=:id',
+            element: getAuthRoute(<GenerateLink />, isAuthenticated),
+          }
+        ]
+      },
+      {
+        path: 'product',
+        element: getAuthRoute(<Product />, isAuthenticated),
       },
     ]
   },

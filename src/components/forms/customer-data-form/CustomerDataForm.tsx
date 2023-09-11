@@ -1,4 +1,4 @@
-import { FC } from 'react'
+import { FC, useState } from 'react'
 import {
   Dropdown,
   DropdownTrigger,
@@ -33,7 +33,7 @@ const classNames = {
 }
 
 interface CustomerDataFormProps {
-  onSubmit: (customer: CustomerForm) => void
+  onSubmit: (customer: CustomerForm) => Promise<void>
   initialData: CustomerForm
   forms: Forms
 }
@@ -43,18 +43,18 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({
   initialData,
   forms,
 }) => {
-  const { registerUser: { customerData } } = forms
+  const { registerCustomer: { customerData } } = forms
   const initialForm = customerData.reduce((acc, curr) => {
     acc[curr.key] = initialData[curr.key] ?? ''
     labelsObject[curr.key] = curr
     return acc
   }, { ...initialData } as CustomerForm)
 
-  const { form, handleChange, handleSetValue } = useForm(initialForm)
-  const { loading } = useUser()
+  const { form, handleChange } = useForm(initialForm)
+  const [showSpinner, setShowSpinner] = useState(false)
 
   const verifiedValuesType = (input: CustomerInput) => {
-    const { type, label, values, defaultValue, key, icon, ...rest } = input
+    const { type, label, options, defaultValue, key, icon, ...rest } = input
 
     switch (type) {
       case 'text':
@@ -89,44 +89,22 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({
         )
 
       case 'select':
-        return values && (
+        return options && (
           <select
-            name="" id=""
+            id=""
+            name=""
             className='bc-form-group__input bg-transparent text-center'
             defaultValue={form[key]}
             onChange={(e) => handleChange(e, key)}>
             <option value="" disabled>Escoge una opción</option>
-            {values.map(obj => (
+            {options.map(obj => (
               <option
-                key={obj.value}
+                key={obj.key}
                 className='text-center'>
-                {obj.label}
+                {obj.label ?? obj.key}
               </option>
             ))}
           </select>
-          // <Dropdown
-          //   backdrop='blur'>
-          //   <DropdownTrigger>
-          //     <Button className='bc-form-group__input bg-transparent'>
-          //       {labelsObject[key].values?.filter(obj => obj.value === form[key])[0]?.label || <span>Escoge una opción</span>}
-          //     </Button>
-          //   </DropdownTrigger>
-          //   <DropdownMenu
-          //     className='bc-form-group__select-menu'
-          //     aria-label={label}
-          //     items={values}
-          //     variant='bordered'
-          //     selectedKeys={form[key]}>
-          //     {(item: any) => (
-          //       <DropdownItem
-          //         key={item.value}
-          //         className='bc-form-group__select-menu-item'
-          //         onClick={() => handleSetValue(key, item.value)}>
-          //         {item.label}
-          //       </DropdownItem>
-          //     )}
-          //   </DropdownMenu>
-          // </Dropdown>
         )
     }
   }
@@ -135,9 +113,11 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({
     !customerData.every(obj => !obj.required ? true : Boolean(form[obj.key]))
   )
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (onSubmit && form) {
-      onSubmit(form)
+      setShowSpinner(true)
+      await onSubmit(form)
+      setShowSpinner(false)
     }
   }
 
@@ -170,9 +150,8 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({
             className='bc-form__button-submit w-full'
             isDisabled={isDisabled}
             onClick={handleSubmit}
-            isLoading={loading}
-            spinner={<Spinner />}>
-            {forms.registerUser.buttonSubmit}
+            isLoading={showSpinner}>
+            {forms.registerCustomer.buttonSubmitText}
           </Button>
         </div>
       </div>

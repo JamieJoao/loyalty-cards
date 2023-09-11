@@ -31,14 +31,15 @@ import {
 
 import { CustomerInterface, CustomerPurchase } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
-import { cutNames, filterValidPurchases } from 'src/utils/functions'
+import { cutNames, filterValidPurchases, getProductDetail } from 'src/utils/functions'
 import { MAX_HEIGHT_PER_ITEM, MAX_ITEMS } from 'src/domain/constants'
 import classNames from 'classnames'
+import { PurchaseInterface } from 'src/types/PurchaseInterface'
 
 interface ModalAddPurchaseProps {
   onSubmit: (form: { product: string, price: string }) => Promise<void>
   onClose: () => void
-  handleRemovePurchase: (purchases: CustomerPurchase[]) => Promise<void>
+  handleRemovePurchase: (purchases: PurchaseInterface[]) => Promise<void>
   currentCustomer: CustomerInterface | null
   isOpen: boolean
   spinners: { addPurchase?: boolean }
@@ -145,25 +146,29 @@ export const ModalAddPurchase: FC<ModalAddPurchaseProps> = ({
                         `max-h-[${MAX_HEIGHT_PER_ITEM * MAX_ITEMS}px]`
                       )}>
                       <Table
-                        isStriped
                         removeWrapper
-                        hideHeader
                         aria-label='tabla para mostrar las compras del cliente'>
                         <TableHeader>
-                          <TableColumn>Producto</TableColumn>
-                          <TableColumn className='text-right'>Acción</TableColumn>
+                          <TableColumn>PRODUCTO</TableColumn>
+                          <TableColumn className='text-right'>ACCIÓN</TableColumn>
                         </TableHeader>
                         <TableBody emptyContent='El cliente no tiene compras'>
                           {validPurchasesMemo.map((obj, index) => (
-                            <TableRow key={index}>
-                              <TableCell>
+                            <TableRow key={obj.id}>
+                              <TableCell className='px-0'>
                                 <div className="flex flex-col">
-                                  <p className="text-bold text-sm capitalize">{obj.product}</p>
-                                  <p className="text-bold text-sm capitalize text-default-400">S/ {obj.price}</p>
+                                  {obj.products.map((product, pIndex) => (
+                                    <p
+                                      key={pIndex}
+                                      className="text-bold text-sm">
+                                      {getProductDetail(product)}
+                                    </p>
+                                  ))}
                                 </div>
                               </TableCell>
                               <TableCell className='text-right'>
                                 <Button
+                                  isIconOnly
                                   size='sm'
                                   color='warning'
                                   variant='bordered'

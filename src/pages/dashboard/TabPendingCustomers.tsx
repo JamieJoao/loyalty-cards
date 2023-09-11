@@ -25,6 +25,8 @@ import { CustomerInterface } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
 import { ModalDelete } from 'src/components'
 import { ModalShareLink } from './ModalShareLink'
+import moment from 'moment'
+import { DATE_FORMAT_SPECIAL } from 'src/domain/constants'
 
 interface TabPendingCustomersProps {
   clients: CustomerInterface[]
@@ -56,11 +58,14 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
     deleteClient: false,
   })
 
+  console.log(clients)
+
   const clientsFiltered = useMemo(() => {
     const pendingClients = clients.filter(obj => !obj.completeData)
-    const query = ({ purchases, names }: CustomerInterface) => JSON.stringify({
-      product: purchases[0]?.product?.toLowerCase(),
+
+    const query = ({ names, phone }: CustomerInterface) => JSON.stringify({
       names,
+      phone,
     })
 
     return form.search
@@ -83,14 +88,14 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
 
   const getTableRow = (value: CustomerInterface, index: number) => {
     const { purchases } = value
-    const [firtPurchase] = purchases
+    const [firtPurchase] = purchases ?? []
 
-    return (
+    return firtPurchase && (
       <TableRow key={index}>
-        <TableCell>{firtPurchase.product}</TableCell>
-        <TableCell>{firtPurchase.price}</TableCell>
-        <TableCell>{firtPurchase.date}</TableCell>
-        <TableCell>
+        <TableCell>{value.names ?? 'NO GUARDADO'}</TableCell>
+        <TableCell>{value.phone ?? 'NO GUARDADO'}</TableCell>
+        <TableCell>{moment(firtPurchase.date).format(DATE_FORMAT_SPECIAL)}</TableCell>
+        <TableCell className='text-right'>
           <div className="relative flex justify-end items-center gap-2">
             <Dropdown className="bg-background border-1 border-default-200">
               <DropdownTrigger>
@@ -155,10 +160,10 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
             aria-label='Tabla de links pendientes'
             className='mt-4 overflow-x-auto pb-4'>
             <TableHeader>
-              <TableColumn>Producto</TableColumn>
-              <TableColumn>Precio</TableColumn>
-              <TableColumn>Fecha</TableColumn>
-              <TableColumn>Acciones</TableColumn>
+              <TableColumn>NOMBRES</TableColumn>
+              <TableColumn>CELULAR</TableColumn>
+              <TableColumn>FECHA</TableColumn>
+              <TableColumn className='text-right'>ACCIONES</TableColumn>
             </TableHeader>
             <TableBody emptyContent={"No hay links que mostrar"}>
               {clientsFiltered.map(getTableRow)}

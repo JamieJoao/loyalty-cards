@@ -3,6 +3,7 @@ import {
   Button,
   ButtonGroup,
   Divider,
+  Image,
   Input,
   Modal,
   ModalBody,
@@ -18,6 +19,8 @@ import { FaClipboard, FaShare } from 'react-icons/fa'
 import { projectURL } from 'src/domain/constants'
 import { useShare } from 'src/hooks/useShare'
 import { ButtonCopy } from 'src/components'
+
+import SuccessImage from 'assets/images/arabica-1092.png'
 
 interface ModalShareLinkProps {
   isOpen: boolean
@@ -49,10 +52,20 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
       <ModalContent>
         {(onClose) => (
           <>
-            <ModalHeader>Link generado!</ModalHeader>
+            <ModalHeader>Link generado</ModalHeader>
             <ModalBody>
-              <ButtonGroup fullWidth>
-                <ButtonCopy isIconOnly={false} url={`${projectURL}mi-ticket/${customerId}`} />
+              <div className="flex justify-center">
+                <Image
+                  width={200}
+                  src={SuccessImage} />
+              </div>
+
+              <ButtonGroup 
+                className='mb-4'
+                fullWidth>
+                <ButtonCopy
+                  isIconOnly={false}
+                  url={`${projectURL}mi-ticket/${customerId}`} />
                 <Button
                   color='primary'
                   variant='bordered'
@@ -64,12 +77,8 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
                   Compartir
                 </Button>
               </ButtonGroup>
-
-              <p className='bc-personal-message mt-2 mb-2'>
-                *Si el botoncito de <strong>compartir</strong> falla, usar el de <strong>copiar</strong> 🤫
-              </p>
             </ModalBody>
-            <ModalFooter></ModalFooter>
+            {/* <ModalFooter></ModalFooter> */}
           </>
         )}
       </ModalContent>

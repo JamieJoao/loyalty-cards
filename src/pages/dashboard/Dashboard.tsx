@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
 import {
   Badge,
+  Button,
   Tab,
   Tabs,
 } from "@nextui-org/react";
@@ -9,10 +10,12 @@ import { useClient } from 'hooks/useClient'
 import { useEnviroment } from 'src/hooks/useEnviroment';
 import { TabCurrentsCustomers } from './TabCurrentsCustomers';
 import { TabPendingCustomers } from './TabPendingCustomers';
-import { ButtonGenerateLink } from 'src/components';
+import { FaLink } from 'react-icons/fa';
+import { useNavigate } from 'react-router-dom';
 
 export const Dashboard = () => {
-  const { clients, getClients, updateClient, addPossibleCustomer, deleteClient, loading: loadingClients } = useClient()
+  const navigate = useNavigate()
+  const { clients, getClients, updateClient, deleteClient, loading } = useClient()
   const { enviroments, getEnviroments } = useEnviroment()
 
   useEffect(() => {
@@ -25,6 +28,7 @@ export const Dashboard = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+  
 
   return (
     <div className='bc-dashboard'>
@@ -41,18 +45,28 @@ export const Dashboard = () => {
             clients={clients}
             updateClient={updateClient}
             enviroments={enviroments}
-            loadingClients={loadingClients}
+            loadingClients={loading}
             deleteClient={deleteClient} />
         </Tab>
         <Tab key='pending-users' title='Pendientes'>
           <TabPendingCustomers
             clients={clients}
-            loadingLinks={loadingClients}
+            loadingLinks={loading}
             deleteClient={deleteClient} />
         </Tab>
       </Tabs>
 
-      <ButtonGenerateLink />
+      <Button
+        className='fixed bottom-4 right-[50%] translate-x-[50%] z-10 rounded-full'
+        size='lg'
+        isIconOnly
+        variant="shadow"
+        color="secondary"
+        onClick={() => {
+          navigate('generate-link')
+        }}>
+        <FaLink />
+      </Button>
     </div >
   )
 }

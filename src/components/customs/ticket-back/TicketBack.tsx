@@ -7,12 +7,12 @@ import Pow1Image from 'assets/images/pow-1.png'
 import Pow2Image from 'assets/images/pow-2.png'
 import HeartImage from 'assets/images/heart.svg'
 import CupcakeImage from 'assets/images/cupcake.png'
-import { CustomerPurchase } from 'src/types/CustomerInterface'
 import { getQuantityPurchases } from 'src/utils/functions'
+import { PurchaseInterface } from 'src/types/PurchaseInterface'
 
 interface TicketBackProps {
   cardBackData: CardBack
-  purchases: CustomerPurchase[]
+  purchases: PurchaseInterface[]
 }
 
 export const TicketBack: FC<TicketBackProps> = ({

@@ -25,8 +25,8 @@ export const ButtonCopy: FC<ButtonCopyProps> = ({ url, isIconOnly = true }) => {
       onCopy={handleCopy}>
       <Button
         isIconOnly={isIconOnly}
-        color='primary'
         variant='bordered'
+        color='primary'
         startContent={!copying
           ? <FaClipboard />
           : <FaCheck />}>

@@ -3,33 +3,67 @@ import { Unsubscribe } from 'firebase/auth'
 
 import { useFirebase } from "./useFirebase"
 import { CustomerInterface } from 'types/CustomerInterface'
-import { useUser } from 'context/UserContext'
 import { customerCollectionName } from 'domain/constants'
+import { PurchaseInterface } from 'src/types/PurchaseInterface'
 
 export const useClient = () => {
-  const { getSnapshot, getSnapshotByLabel, updateDocument, addDocument, deleteDocument } = useFirebase()
-  const { loading, setLoading } = useUser()
+  const { getSnapshot, getSnapshotByLabel, updateDocument, addDocument, deleteDocument, getReference, getDataByLabel } = useFirebase()
   const [clients, setClients] = useState<CustomerInterface[]>([])
   const [client, setClient] = useState<CustomerInterface | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const getClients = (): Unsubscribe => {
     setLoading(true)
-    const unsubscribe = getSnapshot<CustomerInterface>(customerCollectionName, data => {
-      setClients(data)
+
+    const unsubscribe = getSnapshot<CustomerInterface>(customerCollectionName, async data => {
+      const dataParsed = await Promise.all<Promise<any>>(
+        data.map(async obj => {
+          try {
+            let dataPurchase = await getDataByLabel<PurchaseInterface>('purchases', {
+              name: 'customer',
+              value: getReference('customers', obj.id),
+            })
+            dataPurchase = dataPurchase.map(obj => ({ ...obj, date: obj.date.toDate() }))
+
+            return {
+              ...obj,
+              purchases: dataPurchase.length ? dataPurchase : []
+            }
+          } catch (error) {
+            console.log('Error en getClients al obtener la referencia de ' + obj.id, error)
+            return { ...obj }
+          }
+        })
+      )
+
+      setClients(dataParsed)
       setLoading(false)
+
     })
 
     return unsubscribe
   }
 
-  const getClient = (id: string) => {
+  const getClient = (id: string, getRefs: boolean = true) => {
+    setLoading(true)
+
     const unsubscribe = getSnapshotByLabel<CustomerInterface>(
       customerCollectionName,
       { name: '__name__', value: id },
-      data => {
+      async data => {
         const [entryClient] = data
+        let purchasesList: PurchaseInterface[] = []
+        if (entryClient && getRefs) {
+          const purchasesDirty = await getDataByLabel<PurchaseInterface>('purchases', {
+            name: 'customer',
+            value: getReference('customers', entryClient.id),
+          })
 
-        setClient(entryClient)
+          purchasesList = purchasesDirty.map(obj => ({ ...obj, date: obj.date.toDate() }))
+        }
+
+        setClient({ ...entryClient, purchases: purchasesList })
+        setLoading(false)
       })
 
     return unsubscribe
@@ -51,20 +85,21 @@ export const useClient = () => {
     }
   }
 
-  const addPossibleCustomer = async (data?: { [key: string]: unknown }) => {
+  const addPossibleCustomer = async <T>(data?: { [key in keyof T]: unknown }) => {
     try {
-      setLoading(true)
       const possibleCustomer = await addDocument(customerCollectionName, data)
-      setLoading(false)
-
       return possibleCustomer?.id
     } catch (error) {
       console.log(error, 'error in addPossibleCustomer')
     }
   }
 
+  const getCustomerReference = (id: string) => {
+    return getReference(customerCollectionName, id)
+  }
+
   return {
-    loading, 
+    loading,
     clients,
     getClients,
 
@@ -73,6 +108,8 @@ export const useClient = () => {
     updateClient,
     deleteClient,
     addPossibleCustomer,
+
+    getCustomerReference,
   }
 
 }

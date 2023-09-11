@@ -11,7 +11,7 @@ import { TicketNotFound } from './TicketNotFound'
 
 export const Ticket = () => {
   const { id } = useParams()
-  const { client, getClient, updateClient } = useClient()
+  const { loading: loadingClient, client, getClient } = useClient()
   const { enviroments, getEnviroments } = useEnviroment()
   const { loading } = useUser()
 
@@ -25,7 +25,7 @@ export const Ticket = () => {
     }
   }, [])
 
-  if (loading) {
+  if (loading || loadingClient) {
     return <Loading />
   }
 

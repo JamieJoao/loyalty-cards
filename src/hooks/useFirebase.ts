@@ -30,6 +30,20 @@ export const useFirebase = () => {
     return data
   }
 
+  const getDataByLabel = async <T>(table: string, { name, value }: { name: string, value: unknown }) => {
+    const querySnapshot = query(collection(db, table), where(name, '==', value))
+    const docs = await getDocs(querySnapshot)
+    const data: T[] = []
+    if (!docs.empty) {
+      docs
+        .forEach(doc => {
+          data.push({ ...doc.data() as T, id: doc.id })
+        })
+    }
+
+    return data
+  }
+
   const getSnapshot = <T>(table: string, callback: (data: T[]) => void) => {
     const unsubscribe = onSnapshot(collection(db, table), querySnapshot => {
       const data: T[] = []
@@ -47,10 +61,10 @@ export const useFirebase = () => {
 
   const getSnapshotByLabel = <T>(table: string, { name, value }: { name: string, value: unknown }, callback: (data: T[]) => void) => {
     const querySnapshot = query(collection(db, table), where(name, '==', value))
-    const unsubscribe = onSnapshot(querySnapshot, q => {
+    const unsubscribe = onSnapshot(querySnapshot, docs => {
       const data: T[] = []
 
-      q
+      docs
         .forEach(doc => {
           data.push({ ...doc.data() as T, id: doc.id })
         })
@@ -94,10 +108,20 @@ export const useFirebase = () => {
     setLoading(false)
   }
 
+  const getReference = (table: string, id: string) => {
+    try {
+      return doc(db, table, id)
+    } catch (error) {
+      console.log('Error in getReference', error)
+    }
+  }
+
   return {
     getData,
+    getDataByLabel,
     getSnapshot,
     getSnapshotByLabel,
+    getReference,
     updateDocument,
     addDocument,
     deleteDocument,

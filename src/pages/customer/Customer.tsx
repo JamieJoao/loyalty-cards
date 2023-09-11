@@ -10,7 +10,7 @@ import { CustomerForm } from 'src/types/CustomerInterface'
 export const Customer = () => {
   const { id } = useParams()
   const { enviroments, getEnviroments } = useEnviroment()
-  const { client, getClient, updateClient } = useClient()
+  const { client, getClient, updateClient, loading: loadingClient } = useClient()
   const { loading } = useUser()
   const navigate = useNavigate()
 
@@ -31,7 +31,7 @@ export const Customer = () => {
     }
   }
 
-  if (loading) {
+  if (loading || loadingClient) {
     return <Loading />
   }
 

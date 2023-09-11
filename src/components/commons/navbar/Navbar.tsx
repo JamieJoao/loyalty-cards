@@ -10,7 +10,7 @@ import {
   NavbarContent,
   NavbarItem,
 } from "@nextui-org/react"
-import { FaChevronDown, FaLink, FaList } from 'react-icons/fa'
+import { FaChevronDown, FaList } from 'react-icons/fa'
 
 import { useAuth } from "src/hooks/useAuth"
 import { Outlet, useNavigate } from "react-router-dom"
@@ -113,7 +113,7 @@ export const NavbarCustom = () => {
                 color="primary"
                 name="Jason Hughes"
                 size="sm"
-                src="https://scontent.fpiu2-1.fna.fbcdn.net/v/t39.30808-6/344248416_754317436173364_11469272075598553_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=a2f6c7&_nc_ohc=Q_3E6rxBt7wAX-3KN78&_nc_ht=scontent.fpiu2-1.fna&oh=00_AfCCjUsUKax11bmqtienR2EFae9lLna30NCkY4Z27s6xqQ&oe=64FE04E8"
+                src="https://randomuser.me/api/portraits/men/72.jpg"
               />
             </DropdownTrigger>
             <DropdownMenu

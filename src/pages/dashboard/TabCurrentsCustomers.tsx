@@ -44,6 +44,7 @@ import moment from 'moment'
 import { Enviroments } from 'src/types/EnviromentsInterface'
 import { ModalShareLink } from './ModalShareLink'
 import { ModalCustomerDetail } from './ModalCustomerDetail'
+import { PurchaseInterface } from 'src/types/PurchaseInterface'
 
 interface TabCurrentsCustomersProps {
   clients: CustomerInterface[]
@@ -87,6 +88,7 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
   })
 
   const clientsFiltered = useMemo(() => {
+    console.log(clients)
     const registersClients = clients.filter(obj => obj.completeData)
     const query = ({ names, dni }: CustomerInterface) => JSON.stringify({
       names: names?.toLowerCase(),
@@ -102,7 +104,7 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
     navigate(`/mi-ticket/${id}`)
   }
 
-  const handleRemovePurchase = async (purchases: CustomerPurchase[]) => {
+  const handleRemovePurchase = async (purchases: PurchaseInterface[]) => {
     if (currentCustomer) {
       await updateClient(
         currentCustomer.id,
@@ -159,7 +161,10 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
         handleGoToPreview(customer.id)
         break
       case 'purchase':
-        setShowModals({ addPurchase: true })
+        if (currentCustomer) {
+          const { names, phone, id } = currentCustomer
+          navigate('generate-link', { state: { names, phone, id } })
+        }
         break
       case 'link':
         setShowModals({ shareLink: true })
@@ -201,17 +206,6 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
 
       <div className="flex justify-between items-center mt-4">
         <span className="text-default-400 text-small">Total {clientsFiltered.length} users</span>
-        {/* <label className="flex items-center text-default-400 text-small">
-          Rows per page:
-          <select
-            className="bg-transparent outline-none text-default-400 text-small"
-            onChange={() => { }}
-          >
-            <option value="5">5</option>
-            <option value="10">10</option>
-            <option value="15">15</option>
-          </select>
-        </label> */}
       </div>
 
       <div className="grid mt-4 grid-cols-2 sm:grid-cols-4 gap-4">

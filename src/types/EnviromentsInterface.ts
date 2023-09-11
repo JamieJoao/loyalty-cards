@@ -7,8 +7,8 @@ export interface CardBack {
 }
 
 export interface Forms {
-  registerUser: {
-    buttonSubmit: string
+  registerCustomer: {
+    buttonSubmitText: string
     customerData: CustomerInput[]
   }
 }

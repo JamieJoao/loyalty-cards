@@ -1,3 +1,5 @@
+import { PurchaseInterface } from "./PurchaseInterface"
+
 export interface CustomerPurchase {
   product: string
   price: string
@@ -15,7 +17,7 @@ export interface CustomerInterface {
   dni: number
   names: string
   completeData: boolean
-  purchases: CustomerPurchase[]
+  purchases: PurchaseInterface[]
 }
 
 export type CustomerForm = {
@@ -29,9 +31,9 @@ export interface CustomerInput {
   placeholder?: string
   defaultValue: string
   icon: string
-  values?: {
-    label: string,
-    value: string,
+  options?: {
+    key: string,
+    label?: string,
     props?: string[]
   }[]
   type: 'text' | 'select' | 'number' | 'date' | 'textarea'

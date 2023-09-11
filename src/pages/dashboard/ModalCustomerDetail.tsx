@@ -64,47 +64,6 @@ export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
           </div>
         </ModalBody>
         <ModalFooter className='flex-col gap-2'>
-          {/* <Dropdown className="bg-background border-1 border-default-200">
-            <DropdownTrigger>
-              <Button
-                variant='bordered'
-                color='primary'
-                fullWidth>Acciones</Button>
-            </DropdownTrigger>
-            <DropdownMenu
-              variant='faded'
-              aria-labelledby='Menu de opciones'
-              onAction={key => onAction(currentCustomer, key)}>
-              <DropdownItem
-                key='ticket'
-                startContent={<FaTicketAlt className='text-primary-400' />}>Ver ticket</DropdownItem>
-              <DropdownItem
-                key='link'
-                startContent={<FaLink className='text-success-400' />}>Ver link</DropdownItem>
-              <DropdownItem
-                key='delete'
-                startContent={<FaTrash className='text-danger-400' />}>Eliminar</DropdownItem>
-            </DropdownMenu>
-          </Dropdown> */}
-
-          {/* <ButtonGroup fullWidth>
-            <Button
-              fullWidth
-              variant='bordered'
-              startContent={<FaTicketAlt className='text-primary-400' />}
-              isIconOnly></Button>
-            <Button
-              variant='bordered'
-              startContent={<FaLink className='text-success-400' />}
-              isIconOnly></Button>
-            <Button
-              variant='bordered'
-              startContent={<FaTrash className='text-danger-400' />}
-              isIconOnly></Button>
-            <Button
-              variant='bordered'
-              isIconOnly></Button>
-          </ButtonGroup> */}
           <Button
             color='primary'
             variant='bordered'
