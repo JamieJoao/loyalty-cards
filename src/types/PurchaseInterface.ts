@@ -22,3 +22,9 @@ export interface PurchaseInterface {
   date: any
   used: boolean
 }
+
+export interface PurchaseBackupInterface {
+  date: string
+  price: string
+  product: string
+}

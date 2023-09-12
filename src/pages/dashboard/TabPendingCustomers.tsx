@@ -1,6 +1,10 @@
 import { FC, useMemo, useState } from 'react'
 import {
   Button,
+  Card,
+  CardBody,
+  CardHeader,
+  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
@@ -15,20 +19,25 @@ import {
   TableRow,
 } from "@nextui-org/react"
 import {
+  FaCalendar,
   FaCartPlus,
   FaCopy,
   FaEllipsisV,
   FaLink,
   FaShareAlt,
+  FaShoppingCart,
   FaTrash,
 } from "react-icons/fa"
 import { CustomerInterface } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
-import { ModalDelete } from 'src/components'
+import { ModalDelete, PurchaseProductDetail } from 'src/components'
 import { ModalShareLink } from './ModalShareLink'
 import moment from 'moment'
 import { DATE_FORMAT_SPECIAL } from 'src/domain/constants'
 import { useNavigate } from 'react-router-dom'
+import classNames from 'classnames'
+import { FaTag } from 'react-icons/fa6'
+import { getProductDetail, getTotalByPurchase } from 'src/utils/functions'
 
 interface TabPendingCustomersProps {
   clients: CustomerInterface[]
@@ -81,8 +90,8 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
         setShowModals({ shareLink: true })
         break
       case 'purchase':
-        if (currentCustomer) {
-          const { names, phone, id } = currentCustomer
+        if (customer) {
+          const { names, phone, id } = customer
           navigate('generate-link', { state: { names, phone, id } })
         }
         break
@@ -90,48 +99,6 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
         setShowModals({ deleteClient: true })
         break
     }
-  }
-
-  const getTableRow = (value: CustomerInterface, index: number) => {
-    const { purchases } = value
-    const [firtPurchase] = purchases ?? []
-
-    return (
-      <TableRow key={index}>
-        <TableCell>{value.names ?? 'NO GUARDADO'}</TableCell>
-        <TableCell>{value.phone ?? 'NO GUARDADO'}</TableCell>
-        <TableCell>
-          {firtPurchase
-            ? moment(firtPurchase.date).format(DATE_FORMAT_SPECIAL)
-            : 'NO GUARDADO'}
-        </TableCell>
-        <TableCell className='text-right'>
-          <div className="relative flex justify-end items-center gap-2">
-            <Dropdown className="bg-background border-1 border-default-200">
-              <DropdownTrigger>
-                <Button isIconOnly radius="full" size="sm" variant="light">
-                  <FaEllipsisV className="text-default-400" />
-                </Button>
-              </DropdownTrigger>
-              <DropdownMenu
-                variant='faded'
-                aria-labelledby='Menu de opciones'
-                onAction={key => handleAction(value, key)}>
-                <DropdownItem
-                  key='link'
-                  startContent={<FaLink className='text-success-400' />}>Ver link</DropdownItem>
-                <DropdownItem
-                  key='purchase'
-                  startContent={<FaCartPlus className='text-primary-400' />}>Agregar compra</DropdownItem>
-                <DropdownItem
-                  key='delete'
-                  startContent={<FaTrash className='text-danger-400' />}>Eliminar</DropdownItem>
-              </DropdownMenu>
-            </Dropdown>
-          </div>
-        </TableCell>
-      </TableRow>
-    )
   }
 
   const handleDeleteLink = async () => {
@@ -146,10 +113,78 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
   const handleClose = () => !showSpinners.deleteClient && setShowModals({ deleteClient: false })
 
   const skeletonMemo = useMemo(() => (
-    <Skeleton className='rounded-lg mt-4 bg-default-100'>
-      <div className="h-[40px]"></div>
-    </Skeleton>
+    <>
+      <Skeleton className='rounded-large bg-default-100'>
+        <div className="h-[164.19px]"></div>
+      </Skeleton>
+      <Skeleton className='rounded-large bg-default-100'>
+        <div className="h-[164.19px]"></div>
+      </Skeleton>
+    </>
   ), [])
+
+  console.log(clientsFiltered);
+
+
+  const getCardComponent = (customer: CustomerInterface) => {
+    const { names, phone, purchases, purchasesBackup, id } = customer
+    const [firstPurchase] = purchases
+    const [firstPurchaseBackup] = purchasesBackup
+
+    return (
+      <Card
+        className='pt-2'
+        isPressable
+        onPress={() => { }}
+        shadow='sm'>
+        <CardHeader className="pt-2 px-4 flex-col items-start">
+          <p
+            className={
+              classNames('text-tiny uppercase font-bold', !names && 'text-danger')
+            }>{names ?? 'sin nombre'}</p>
+          <small className="text-default-500">01 compras</small>
+          <h4
+            className={
+              classNames('font-bold text-large', !phone && 'text-danger')
+            }>{phone ?? 'SIN CELULAR'}</h4>
+        </CardHeader>
+        <CardBody className='border-t-1 gap-2'>
+          <div className="flex flex-col">
+            {firstPurchase
+              ? firstPurchase.products.map((product, index) => (
+                <p key={index} className='text-sm flex-1'>{getProductDetail(product)}</p>
+                // <PurchaseProductDetail purchaseProduct={product} key={index} />
+              ))
+              : firstPurchaseBackup && (
+                <p className='text-sm flex-1'>{`${firstPurchaseBackup.product} - s/ ${firstPurchaseBackup.price}`}</p>
+              )}
+          </div>
+
+          {/* <div className="flex items-center gap-4">
+            <FaCalendar className='text-default-400' />
+            <div className="flex flex-col">
+              {firstPurchase
+                ? <p className='text-sm flex-1'>{moment(firstPurchase.date).format(DATE_FORMAT_SPECIAL)}</p>
+                : firstPurchaseBackup && <p className='text-sm flex-1'>{moment(firstPurchaseBackup.date).format(DATE_FORMAT_SPECIAL)}</p>}
+            </div>
+          </div> */}
+
+          <Divider />
+          <div className="flex justify-between">
+            {firstPurchase
+              ? <p className='text-xs'>{moment(firstPurchase.date).format(DATE_FORMAT_SPECIAL)}</p>
+              : firstPurchaseBackup && <p className='text-xs flex-1'>{moment(firstPurchaseBackup.date).format(DATE_FORMAT_SPECIAL)}</p>}
+
+            <p className='text-xs'>s/ {
+              firstPurchase
+                ? getTotalByPurchase(firstPurchase.products)
+                : Number(firstPurchaseBackup?.price ?? 0).toFixed(2)
+            }</p>
+          </div>
+        </CardBody>
+      </Card>
+    )
+  }
 
   return (
     <>
@@ -161,28 +196,44 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
           placeholder='Ejemplo: Minitorta de Batman, 25.5 o 2/04/23'
           type='text'
           value={form.search}
-          onChange={e => handleChange(e, 'search')}
-          description='Busca por el nombre de la primera compra, precio o fecha' />
+          onChange={e => handleChange(e, 'search')} />
       </div>
 
-      {loadingLinks
-        ? skeletonMemo
-        : (
-          <Table
-            removeWrapper
-            aria-label='Tabla de links pendientes'
-            className='mt-4 overflow-x-auto pb-4'>
-            <TableHeader>
-              <TableColumn>NOMBRES</TableColumn>
-              <TableColumn>CELULAR</TableColumn>
-              <TableColumn>FECHA</TableColumn>
-              <TableColumn className='text-right'>ACCIONES</TableColumn>
-            </TableHeader>
-            <TableBody emptyContent={"No hay links que mostrar"}>
-              {clientsFiltered.map(getTableRow)}
-            </TableBody>
-          </Table>
-        )}
+      <div className="flex justify-between items-center mt-4">
+        <span className="text-default-400 text-small">Total {clientsFiltered.length} users</span>
+      </div>
+
+      <div className="grid mt-4 grid-cols-1 sm:grid-cols-2 gap-4">
+        {loadingLinks
+          ? skeletonMemo
+          : (
+            clientsFiltered.map((obj, index) => {
+              return (
+                <Dropdown
+                  key={obj.id + index}
+                  className="bg-background border-1 border-default-200">
+                  <DropdownTrigger>
+                    {getCardComponent(obj)}
+                  </DropdownTrigger>
+                  <DropdownMenu
+                    variant='faded'
+                    aria-labelledby='Menu de opciones'
+                    onAction={key => handleAction(obj, key)}>
+                    <DropdownItem
+                      key='link'
+                      startContent={<FaLink className='text-success-400' />}>Ver link</DropdownItem>
+                    <DropdownItem
+                      key='purchase'
+                      startContent={<FaCartPlus className='text-primary-400' />}>Agregar compra</DropdownItem>
+                    <DropdownItem
+                      key='delete'
+                      startContent={<FaTrash className='text-danger-400' />}>Eliminar</DropdownItem>
+                  </DropdownMenu>
+                </Dropdown>
+              )
+            })
+          )}
+      </div>
 
       {currentCustomer &&
         (<>

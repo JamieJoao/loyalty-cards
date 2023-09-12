@@ -56,14 +56,12 @@ interface TabCurrentsCustomersProps {
 }
 
 interface ShowModals {
-  addPurchase?: boolean
   deleteClient?: boolean
   shareLink?: boolean
   customerDetail?: boolean
 }
 
 interface ShowSpinners {
-  addPurchase?: boolean
   deleteClient?: boolean
 }
 
@@ -78,13 +76,11 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
   const { form, handleChange, handleSetValue } = useForm({ search: '', tableLabels: false })
   const [currentCustomer, setCurrentCustomer] = useState<CustomerInterface | null>(null)
   const [showModals, setShowModals] = useState<ShowModals>({
-    addPurchase: false,
     deleteClient: false,
     shareLink: false,
     customerDetail: false,
   })
   const [showSpinners, setShowSpinners] = useState<ShowSpinners>({
-    addPurchase: false,
     deleteClient: false,
   })
 
@@ -112,34 +108,6 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
         { purchases }
       )
       setCurrentCustomer({ ...currentCustomer, purchases })
-    }
-  }
-
-  const handleAddPurchase = async (form: { product: string, price: string }) => {
-    if (currentCustomer && enviroments) {
-      let historyPurchases = currentCustomer.purchases
-
-      if (getQuantityPurchases(historyPurchases) === enviroments.cardBack.gifts.length) {
-        historyPurchases = historyPurchases.map(obj => ({ ...obj, used: true }))
-      }
-
-      setShowSpinners({ addPurchase: true })
-      await updateClient(
-        currentCustomer.id,
-        {
-          purchases: [
-            ...historyPurchases,
-            {
-              product: form.product,
-              price: form.price,
-              date: moment().format('DD/MM/yyyy'),
-              used: false,
-            }
-          ]
-        })
-
-      setShowSpinners({ addPurchase: false })
-      setCurrentCustomer(null)
     }
   }
 
@@ -192,7 +160,7 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
 
   return (
     <>
-      <div className="flex gap-4">
+      <div className="grid sm:grid-cols-2">
         <Input
           spellCheck={false}
           classNames={{ inputWrapper: 'shadow-none' }}
@@ -276,14 +244,6 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
         </>)
 
       }
-
-      <ModalAddPurchase
-        currentCustomer={currentCustomer}
-        isOpen={!!showModals.addPurchase}
-        spinners={showSpinners}
-        onClose={() => !showSpinners.addPurchase && setShowModals({ addPurchase: false })}
-        handleRemovePurchase={handleRemovePurchase}
-        onSubmit={handleAddPurchase} />
     </>
   )
 }

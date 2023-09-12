@@ -31,7 +31,7 @@ export const Dashboard = () => {
   
 
   return (
-    <div className='bc-dashboard'>
+    <div className='bc-dashboard pb-[70px]'>
       <Tabs
         fullWidth
         aria-label='Usuarios'
@@ -60,13 +60,13 @@ export const Dashboard = () => {
         className='fixed bottom-4 right-[50%] translate-x-[50%] z-10 rounded-full'
         size='lg'
         isIconOnly
-        variant="shadow"
-        color="secondary"
+        variant="flat"
+        color="primary"
         onClick={() => {
           navigate('generate-link')
         }}>
         <FaLink />
       </Button>
-    </div >
+    </div>
   )
 }

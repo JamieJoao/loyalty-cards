@@ -27,6 +27,7 @@ export const useClient = () => {
 
             return {
               ...obj,
+              purchasesBackup: obj.purchases ?? [],
               purchases: dataPurchase.length ? dataPurchase : []
             }
           } catch (error) {

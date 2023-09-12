@@ -1,4 +1,4 @@
-import { PurchaseInterface } from "./PurchaseInterface"
+import { PurchaseBackupInterface, PurchaseInterface } from "./PurchaseInterface"
 
 export interface CustomerPurchase {
   product: string
@@ -18,6 +18,7 @@ export interface CustomerInterface {
   names: string
   completeData: boolean
   purchases: PurchaseInterface[]
+  purchasesBackup: PurchaseBackupInterface[]
 }
 
 export type CustomerForm = {

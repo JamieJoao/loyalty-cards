@@ -13,6 +13,7 @@ import moment from 'moment'
 import { usePurchase } from 'src/hooks/usePurchase'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
 import { getTotalByPurchase } from 'src/utils/functions'
+import { PurchaseProductDetail } from 'src/components'
 
 interface ModalPurchasesListProps {
   customerId: string
@@ -59,15 +60,7 @@ export const ModalPurchasesList: FC<ModalPurchasesListProps> = ({
                 <Divider />
 
                 {purchase.products.map((product, pIndex) => (
-                  <div
-                    key={pIndex}
-                    className='flex flex-col mt-2'>
-                    <p className='text-sm'>
-                      {`${product.product.name} - `}
-                      <span className='text-xs text-primary-400 font-bold'>{product.quantity}u</span>
-                    </p>
-                    <p className='text-xs text-default-400'>{`s/ ${(product.price * product.quantity).toFixed(2)}`}</p>
-                  </div>
+                  <PurchaseProductDetail purchaseProduct={product} key={pIndex} />
                 ))}
               </div>
             )))
