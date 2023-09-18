@@ -2,18 +2,45 @@ import { useState } from 'react'
 
 import { useFirebase } from "./useFirebase"
 import { ProductInterface } from 'src/types/PurchaseInterface'
+import { CategoryInterface } from 'src/types/CategoryInterface'
+import { getDoc } from 'firebase/firestore'
+
+const tableName = 'products'
 
 export const useProducts = () => {
-  const { getSnapshot, addDocument, deleteDocument, updateDocument, getSnapshotByLabel } = useFirebase()
+  const { getSnapshot, addDocument, deleteDocument, updateDocument, getSnapshotByLabel, getDataByLabel, getReference } = useFirebase()
   const [products, setProducts] = useState<ProductInterface[]>([])
   const [product, setProduct] = useState<ProductInterface | null>()
-  const [loading, setLoading] = useState(false)
+  const [loadingProducts, setLoading] = useState(false)
 
   const getProducts = () => {
     try {
       setLoading(true)
-      const unsub = getSnapshot<ProductInterface>('products', data => {
-        setProducts(data)
+      const unsub = getSnapshot<ProductInterface>(tableName, async data => {
+        const dataParsed = await Promise.all<Promise<any>>(
+          data.map(async obj => {
+            try {
+              let categoryResolved: string | CategoryInterface = obj.id
+              if (obj.category) {
+                const dataCategory = await getDoc<any, any>(obj.category)
+                if (dataCategory?.exists()) {
+                  categoryResolved = { ...dataCategory.data(), id: dataCategory.id }
+                }
+              }
+
+              return {
+                ...obj,
+                category: categoryResolved,
+                // categoryId: obj.category.id
+              }
+            } catch (error) {
+              console.log('Error en getProducts al obtener la referencia de ' + obj.id, error)
+              return { ...obj }
+            }
+          })
+        )
+
+        setProducts(dataParsed)
         setLoading(false)
       })
 
@@ -25,7 +52,7 @@ export const useProducts = () => {
 
   const getProduct = (id: string) => {
     const unsubscribe = getSnapshotByLabel<ProductInterface>(
-      'products',
+      tableName,
       { name: '__name__', value: id },
       data => {
         const [entryProduct] = data
@@ -37,7 +64,7 @@ export const useProducts = () => {
 
   const addProduct = async (data?: { [key: string]: any }) => {
     try {
-      await addDocument('products', data)
+      await addDocument(tableName, data)
     } catch (error) {
       console.log('error en addProduct ')
     }
@@ -45,7 +72,7 @@ export const useProducts = () => {
 
   const updateProduct = async (id: string, data: { [key: string]: any }) => {
     try {
-      await updateDocument('products', id, data)
+      await updateDocument(tableName, id, data)
     } catch (error) {
       console.log('error en updateProduct ')
     }
@@ -53,7 +80,7 @@ export const useProducts = () => {
 
   const deleteProduct = async (id: string) => {
     try {
-      await deleteDocument('products', id)
+      await deleteDocument(tableName, id)
     } catch (error) {
       console.log('error en deleteProduct ')
     }
@@ -62,7 +89,7 @@ export const useProducts = () => {
   return {
     products,
     product,
-    loading,
+    loadingProducts,
 
     getProducts,
     getProduct,

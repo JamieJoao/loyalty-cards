@@ -59,10 +59,10 @@ export const useClient = () => {
             name: 'customer',
             value: getReference('customers', entryClient.id),
           })
-          
+
           purchasesList = purchasesDirty.map(obj => ({ ...obj, date: obj.date.toDate() }))
         }
-        
+
         setClient({
           ...entryClient,
           purchases: [

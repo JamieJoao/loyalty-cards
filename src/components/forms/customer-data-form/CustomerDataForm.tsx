@@ -54,7 +54,7 @@ export const CustomerDataForm: FC<CustomerDataFormProps> = ({
   const [showSpinner, setShowSpinner] = useState(false)
 
   const verifiedValuesType = (input: CustomerInput) => {
-    const { type, label, options, defaultValue, key, icon, ...rest } = input
+    const { type, label, options, key, ...rest } = input
 
     switch (type) {
       case 'text':

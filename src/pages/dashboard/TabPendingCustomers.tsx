@@ -27,10 +27,11 @@ import {
   FaShareAlt,
   FaShoppingCart,
   FaTrash,
+  FaUser,
 } from "react-icons/fa"
 import { CustomerInterface } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
-import { ModalDelete, PurchaseProductDetail } from 'src/components'
+import { ModalDelete, ModalUpdateCustomer, PurchaseProductDetail } from 'src/components'
 import { ModalShareLink } from './ModalShareLink'
 import moment from 'moment'
 import { DATE_FORMAT_SPECIAL } from 'src/domain/constants'
@@ -48,6 +49,7 @@ interface TabPendingCustomersProps {
 interface ShowModals {
   deleteClient?: boolean
   shareLink?: boolean
+  updateCustomer?: boolean
 }
 
 interface ShowSpinners {
@@ -65,6 +67,7 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
   const [showModals, setShowModals] = useState<ShowModals>({
     deleteClient: false,
     shareLink: false,
+    updateCustomer: false,
   })
   const [showSpinners, setShowSpinners] = useState<ShowSpinners>({
     deleteClient: false,
@@ -82,17 +85,22 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
       : pendingClients
   }, [form.search, clients])
 
+  console.log(clientsFiltered)
+
   const handleAction = (customer: CustomerInterface, key: React.Key) => {
     setCurrentCustomer(customer)
 
     switch (key) {
+      case 'update-data':
+        setShowModals({ updateCustomer: true })
+        break
       case 'link':
         setShowModals({ shareLink: true })
         break
       case 'purchase':
         if (customer) {
-          const { names, phone, id } = customer
-          navigate('generate-link', { state: { names, phone, id } })
+          const { names, phone, id, purchasesBackup } = customer
+          navigate('generate-link', { state: { names, phone, id, purchasesBackup } })
         }
         break
       case 'delete':
@@ -123,8 +131,6 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
     </>
   ), [])
 
-  console.log(clientsFiltered);
-
 
   const getCardComponent = (customer: CustomerInterface) => {
     const { names, phone, purchases, purchasesBackup, id } = customer
@@ -135,14 +141,13 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
       <Card
         className='pt-2'
         isPressable
-        onPress={() => { }}
         shadow='sm'>
         <CardHeader className="pt-2 px-4 flex-col items-start">
           <p
             className={
               classNames('text-tiny uppercase font-bold', !names && 'text-danger')
             }>{names ?? 'sin nombre'}</p>
-          <small className="text-default-500">01 compras</small>
+          <small className="text-default-500">{firstPurchase ? '1° compra' : '00 compras'}</small>
           <h4
             className={
               classNames('font-bold text-large', !phone && 'text-danger')
@@ -159,15 +164,6 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
                 <p className='text-sm flex-1'>{`${firstPurchaseBackup.product} - s/ ${firstPurchaseBackup.price}`}</p>
               )}
           </div>
-
-          {/* <div className="flex items-center gap-4">
-            <FaCalendar className='text-default-400' />
-            <div className="flex flex-col">
-              {firstPurchase
-                ? <p className='text-sm flex-1'>{moment(firstPurchase.date).format(DATE_FORMAT_SPECIAL)}</p>
-                : firstPurchaseBackup && <p className='text-sm flex-1'>{moment(firstPurchaseBackup.date).format(DATE_FORMAT_SPECIAL)}</p>}
-            </div>
-          </div> */}
 
           <Divider />
           <div className="flex justify-between">
@@ -220,6 +216,9 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
                     aria-labelledby='Menu de opciones'
                     onAction={key => handleAction(obj, key)}>
                     <DropdownItem
+                      key='update-data'
+                      startContent={<FaUser className='text-warning-400' />}>Actualizar Datos</DropdownItem>
+                    <DropdownItem
                       key='link'
                       startContent={<FaLink className='text-success-400' />}>Ver link</DropdownItem>
                     <DropdownItem
@@ -254,6 +253,11 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
             customerId={currentCustomer.id}
             isOpen={!!showModals.shareLink}
             onClose={() => setShowModals({ shareLink: false })} />
+
+          <ModalUpdateCustomer
+            customer={currentCustomer}
+            isOpen={!!showModals.updateCustomer}
+            onClose={() => setShowModals({ updateCustomer: false })} />
         </>)
       }
     </>

@@ -6,11 +6,14 @@ export interface CardBack {
   subtitle: string
 }
 
+export interface FormTemplate {
+  buttonSubmitText: string
+  customerData: CustomerInput[]
+  name: string
+}
+
 export interface Forms {
-  registerCustomer: {
-    buttonSubmitText: string
-    customerData: CustomerInput[]
-  }
+  [key: string]: FormTemplate
 }
 
 export interface Enviroments {

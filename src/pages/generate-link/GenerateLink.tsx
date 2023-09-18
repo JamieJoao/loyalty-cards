@@ -5,6 +5,7 @@ import {
   Input,
   Select,
   SelectItem,
+  SelectSection,
   Table,
   TableBody,
   TableCell,
@@ -40,10 +41,6 @@ import { ModalShareLink } from '../dashboard/ModalShareLink'
 import { ModalPurchasesList } from './ModalPurchasesList'
 
 interface PurchaseForm {
-  // search: string
-  // productId: string[]
-  // price: string
-  // quantity: number
   names: string
   phone?: string
   date: string
@@ -62,7 +59,7 @@ export const GenerateLink = () => {
   const location = useLocation()
   const { names, phone, id } = location.state ?? {}
   const { addPossibleCustomer, getCustomerReference } = useClient()
-  const { products, getProducts, loading } = useProducts()
+  const { products, getProducts, loadingProducts } = useProducts()
   const { purchases, addPurchase, loading: loadingPurchases, getPurchasesByCustomer } = usePurchase()
   const [purchaseList, setPurchaseList] = useState<PurchaseProductsInterface[]>([])
   const [customerId, setCustomerId] = useState<string | null>(null)
@@ -91,6 +88,7 @@ export const GenerateLink = () => {
       if (unsub) unsub()
       if (unsubPurchase) unsubPurchase()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -101,7 +99,8 @@ export const GenerateLink = () => {
     else {
       handleSetValuePurchase('price', '')
     }
-  }, [formPurchase.productId])
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [formPurchase.productId, products])
 
   const handleChangeQuantity = (plus: boolean) => {
     handleSetValuePurchase('quantity', plus ? ++formPurchase.quantity : --formPurchase.quantity)
@@ -143,6 +142,21 @@ export const GenerateLink = () => {
       : products
   }, [products, formPurchase.search])
 
+  const productsByCategoryMemo = useMemo(() => (
+    productsFiltered.reduce((acc: { id: string, name: string, products: ProductInterface[] }[], curr) => {
+      const indexCurrent = acc.findIndex(obj => obj.id === curr.category.id)
+
+      if (indexCurrent > -1) {
+        acc[indexCurrent].products.push(curr)
+      }
+      else {
+        acc.push({ ...curr.category, products: [curr] })
+      }
+
+      return acc
+    }, [])
+  ), [productsFiltered])
+
   const handleGenerateLink = async () => {
     setShowSpinners(true)
     const preCustomerId = await addPossibleCustomer({
@@ -179,7 +193,7 @@ export const GenerateLink = () => {
   const getLabelSelectProduct = () => {
     const pLength = productsFiltered.length
 
-    if (loading) {
+    if (loadingProducts) {
       return <p className='mt-1'>Cargando productos ...</p>
     }
     else if (pLength) {
@@ -242,8 +256,7 @@ export const GenerateLink = () => {
               startContent={<FaSearch className='text-default-400' />} />
 
             <Select
-              items={productsFiltered}
-              isLoading={loading}
+              isLoading={loadingProducts}
               fullWidth
               variant='flat'
               label="Producto"
@@ -253,14 +266,23 @@ export const GenerateLink = () => {
               onChange={handleChangeProduct}
               startContent={<BiCake className='text-default-400' />}
             >
-              {product => (
-                <SelectItem
-                  key={product.id}
-                  value={product.id}
-                  description={<span className='text-default-400'>s/ {product.price?.toFixed(2) ?? 0}</span>}>
-                  {product.name}
-                </SelectItem>
-              )}
+              {productsByCategoryMemo.map(productCategory => (
+                <SelectSection
+                  key={productCategory.id}
+                  title={productCategory.name}
+                  showDivider
+                >
+                  {productCategory.products.map(product => (
+                    <SelectItem
+                      key={product.id}
+                      value={product.id}
+                      description={<span className='text-default-400'>s/ {product.price?.toFixed(2) ?? 0}</span>}
+                    >
+                      {product.name}
+                    </SelectItem>
+                  ))}
+                </SelectSection>
+              ))}
             </Select>
 
             <div className="flex gap-4">
@@ -374,7 +396,7 @@ export const GenerateLink = () => {
                     classNames={{ inputWrapper: 'shadow-none' }}
                     label='Celular'
                     placeholder='Ejemplo: 987654321'
-                    type='text'
+                    type='number'
                     variant='flat'
                     value={String(form.phone)}
                     onChange={(e) => handleChange(e, 'phone')}
