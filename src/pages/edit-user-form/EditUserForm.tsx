@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
-import { Divider, Input, Select, SelectItem, Switch } from '@nextui-org/react'
+import { Button, Divider, Input, Select, SelectItem, Switch } from '@nextui-org/react'
 import {
   MdLabel,
   MdKey
@@ -17,7 +17,7 @@ import { useForm } from 'src/hooks/useForm'
 import { FormTemplate, Forms } from 'src/types/EnviromentsInterface'
 
 export const EditUserForm = () => {
-  const { enviroments, loading: loadingEnviroments, getEnviroments } = useEnviroment()
+  const { enviroments, loading: loadingEnviroments, getEnviroment } = useEnviroment()
   const [selectedForm, setSelectedForm] = useState<FormTemplate | null>(null)
   const [selectedField, setSelectedField] = useState<CustomerInput | null>(null)
   const { form, handleChange, resetForm } = useForm({
@@ -33,8 +33,11 @@ export const EditUserForm = () => {
   // })
 
   useEffect(() => {
-    const sub = getEnviroments()
-    return () => sub()
+    const unsub = getEnviroment()
+    return () => {
+      if (unsub) unsub()
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -56,7 +59,7 @@ export const EditUserForm = () => {
     else {
       setSelectedField(null)
     }
-  }, [form.fieldType])
+  }, [form.fieldType, selectedForm?.customerData])
 
   const handleChangeField = (e: ChangeEvent<HTMLSelectElement | HTMLInputElement>, key: string) => {
     if (selectedField) {
@@ -92,6 +95,10 @@ export const EditUserForm = () => {
     }
   }
 
+  const handleClick = () => {
+    console.log(selectedField)
+  }
+
   const getLabelForm = (
     <div className="flex flex-col gap-4">
       <Input
@@ -118,13 +125,12 @@ export const EditUserForm = () => {
         value={selectedField?.placeholder}
         onChange={e => handleChangeField(e, 'placeholder')} />
 
-      <div className="flex flex-row gap-4">
-        <Select
+      <div className="grid grid-cols-2 gap-4">
+        {/* <Select
           startContent={<MdLabel className='text-default-400' />}
           endContent={getIcon(String(selectedField?.type))}
           label="Tipo de entrada"
           placeholder="Selecciona un tipo"
-          // value={selectedField?.type}
           selectedKeys={[selectedField?.type ?? '']}
           onChange={e => handleChangeField(e, 'type')}
         >
@@ -135,7 +141,38 @@ export const EditUserForm = () => {
               {input.label}
             </SelectItem>
           ))}
-        </Select>
+        </Select> */}
+        <div className='flex flex-col w-full'>
+          <div className='w-full inline-flex px-3 bg-default-100 data-[hover=true]:bg-default-200 min-h-unit-10 rounded-medium flex-col items-start justify-center gap-0 py-2 h-14'>
+            <label
+              className='block font-medium text-foreground-600 text-tiny cursor-text'
+              htmlFor=""
+            >
+              Selecciona un tipo
+            </label>
+
+            <div className='inline-flex w-full h-full items-center gap-1.5'>
+              <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 24 24" className="text-default-400" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><path fill="none" d="M0 0h24v24H0z"></path><path d="M17.63 5.84C17.27 5.33 16.67 5 16 5L5 5.01C3.9 5.01 3 5.9 3 7v10c0 1.1.9 1.99 2 1.99L16 19c.67 0 1.27-.33 1.63-.84L22 12l-4.37-6.16z"></path></svg>
+              <select
+                className='w-full h-full font-normal bg-transparent outline-none placeholder:text-foreground-500 text-small'
+                name=""
+                id=""
+                value={selectedField?.type}
+                onChange={e => handleChangeField(e, 'type')}
+              >
+                <option value=''>Selecciona un tipo</option>
+                {inputTypes.map(input => (
+                  <option
+                    key={input.key}
+                    value={input.key}>
+                    {input.label}
+                  </option>
+                ))}
+              </select>
+              {getIcon(String(selectedField?.type))}
+            </div>
+          </div>
+        </div>
 
         <Switch
           size='sm'
@@ -143,6 +180,13 @@ export const EditUserForm = () => {
           Requerido
         </Switch>
       </div>
+
+      <Button
+        color='primary'
+        onClick={handleClick}
+      >
+        Guardar
+      </Button>
     </div>
   )
 

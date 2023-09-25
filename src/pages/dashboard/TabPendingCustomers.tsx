@@ -76,7 +76,7 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
   const clientsFiltered = useMemo(() => {
     const pendingClients = clients.filter(obj => !obj.completeData)
     const query = ({ names, phone }: CustomerInterface) => JSON.stringify({
-      names,
+      names: names?.toLowerCase(),
       phone,
     })
 
@@ -84,8 +84,6 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
       ? pendingClients.filter(obj => `${query(obj)}`.includes(form.search.toLowerCase()))
       : pendingClients
   }, [form.search, clients])
-
-  console.log(clientsFiltered)
 
   const handleAction = (customer: CustomerInterface, key: React.Key) => {
     setCurrentCustomer(customer)

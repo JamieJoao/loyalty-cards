@@ -1,4 +1,4 @@
-import { FC, useEffect } from 'react'
+import { FC, useEffect, useMemo } from 'react'
 import {
   Button,
   ButtonGroup,
@@ -21,6 +21,7 @@ import { useShare } from 'src/hooks/useShare'
 import { ButtonCopy } from 'src/components'
 
 import SuccessImage from 'assets/images/arabica-1092.png'
+import { useEnviroment } from 'src/hooks/useEnviroment'
 
 interface ModalShareLinkProps {
   isOpen: boolean
@@ -30,12 +31,21 @@ interface ModalShareLinkProps {
 
 export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, onClose }) => {
   const { handleShare, isSharing } = useShare()
+  const { enviroments, getEnviroment, loading } = useEnviroment()
+
+  useEffect(() => {
+    const unsub = getEnviroment()
+    return () => {
+      if (unsub) unsub()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const handleShareLink = () => {
-    if (customerId) {
+    if (customerId && enviroments) {
       const data = {
         title: 'Bocato',
-        text: 'Link para tu ticket de Bocato',
+        text: enviroments.linkShareMessage ?? '',
         url: `${projectURL}mi-ticket/${customerId}`,
         apps: ['com.whatsapp']
       }
@@ -43,6 +53,10 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
       handleShare(data)
     }
   }
+
+  const messageToCopy = useMemo(() => (
+    `${enviroments.linkShareMessage ?? ''}\n${projectURL}mi-ticket/${customerId}`
+  ), [enviroments, customerId])
 
   return (
     <Modal
@@ -60,17 +74,18 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
                   src={SuccessImage} />
               </div>
 
-              <ButtonGroup 
+              <ButtonGroup
                 className='mb-4'
                 fullWidth>
                 <ButtonCopy
+                  isLoading={loading}
                   isIconOnly={false}
-                  url={`${projectURL}mi-ticket/${customerId}`} />
+                  url={messageToCopy.trim()} />
                 <Button
                   color='primary'
                   variant='bordered'
                   spinner={<Spinner size='sm' />}
-                  isLoading={isSharing}
+                  isLoading={isSharing || loading}
                   onClick={() => handleShareLink()}
                   startContent={<FaShare />}
                 >

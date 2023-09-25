@@ -5,10 +5,11 @@ import { FaClipboard, FaCheck } from 'react-icons/fa'
 
 interface ButtonCopyProps {
   url: string
+  isLoading?: boolean
   isIconOnly?: boolean
 }
 
-export const ButtonCopy: FC<ButtonCopyProps> = ({ url, isIconOnly = true }) => {
+export const ButtonCopy: FC<ButtonCopyProps> = ({ url, isIconOnly = true, isLoading }) => {
   const [copying, setCopying] = useState(false)
 
   const handleCopy = () => {
@@ -24,6 +25,7 @@ export const ButtonCopy: FC<ButtonCopyProps> = ({ url, isIconOnly = true }) => {
       text={url} 
       onCopy={handleCopy}>
       <Button
+        isLoading={isLoading}
         isIconOnly={isIconOnly}
         variant='bordered'
         color='primary'

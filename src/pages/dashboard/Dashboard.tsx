@@ -16,15 +16,15 @@ import { useNavigate } from 'react-router-dom';
 export const Dashboard = () => {
   const navigate = useNavigate()
   const { clients, getClients, updateClient, deleteClient, loading } = useClient()
-  const { enviroments, getEnviroments } = useEnviroment()
+  const { enviroments, getEnviroment } = useEnviroment()
 
   useEffect(() => {
-    const unsubscribe = getClients()
-    const unsubscribeEnv = getEnviroments()
+    const unsub = getClients()
+    const unsubEnv = getEnviroment()
 
     return () => {
-      unsubscribe()
-      unsubscribeEnv()
+      unsub()
+      if (unsubEnv) unsubEnv()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])

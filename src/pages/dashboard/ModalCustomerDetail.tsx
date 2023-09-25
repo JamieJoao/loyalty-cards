@@ -66,22 +66,22 @@ export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
         <ModalFooter className='flex-col gap-2'>
           <Button
             color='primary'
-            variant='bordered'
+            variant='flat'
             startContent={<FaCartPlus className='text-primary-400' />}
             onClick={() => onAction(currentCustomer, 'purchase')}>Agregar Compra</Button>
           <div className="grid grid-cols-2 gap-4 w-full">
             <Button
-              variant='bordered'
+              variant='flat'
               startContent={<FaTicketAlt className='text-primary-400' />}
               onClick={() => onAction(currentCustomer, 'ticket')}>Ver Ticket</Button>
             <Button
-              variant='bordered'
+              variant='flat'
               startContent={<FaLink className='text-primary-400' />}
               onClick={() => onAction(currentCustomer, 'link')}>Ver Link</Button>
           </div>
           <Button
             color='danger'
-            variant='bordered'
+            variant='flat'
             startContent={<FaTrash className='text-danger-400' />}
             onClick={() => onAction(currentCustomer, 'delete')}>Eliminar</Button>
         </ModalFooter>

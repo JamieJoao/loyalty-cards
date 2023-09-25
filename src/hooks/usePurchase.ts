@@ -9,13 +9,15 @@ export const usePurchase = () => {
   const { getSnapshot, addDocument, deleteDocument, updateDocument, getSnapshotByLabel, getReference } = useFirebase()
   const [purchases, setPurchases] = useState<PurchaseInterface[]>([])
   const [purchase, setPurchase] = useState<PurchaseInterface | null>()
-  const [loading, setLoading] = useState(false)
+  const [loadingPurchases, setLoading] = useState(false)
 
   const getPurchases = () => {
     try {
       setLoading(true)
       const unsub = getSnapshot<PurchaseInterface>(TABLE_NAME, data => {
-        setPurchases(data)
+        const dataTransformed = data?.map(obj => ({ ...obj, date: obj.date.toDate() })) ?? []
+
+        setPurchases(dataTransformed)
         setLoading(false)
       })
 
@@ -67,7 +69,7 @@ export const usePurchase = () => {
       TABLE_NAME,
       { name: 'customer', value: getReference('customers', customerId) },
       data => {
-        setPurchases(data.map(obj => ({ ...obj, date: obj.date.toDate()})))
+        setPurchases(data.map(obj => ({ ...obj, date: obj.date.toDate() })))
         setLoading(false)
       })
 
@@ -77,7 +79,7 @@ export const usePurchase = () => {
   return {
     purchases,
     purchase,
-    loading,
+    loadingPurchases,
 
     getPurchases,
     getPurchase,

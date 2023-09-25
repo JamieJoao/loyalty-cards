@@ -6,6 +6,8 @@ import { Dashboard, Login, Product, Ticket } from "src/pages"
 import { Customer } from "src/pages/customer/Customer"
 import { EditUserForm } from "src/pages/edit-user-form/EditUserForm"
 import { GenerateLink } from "src/pages/generate-link/GenerateLink"
+import { Charts } from "src/pages/reports/Charts"
+import { Purchases } from "src/pages/reports/Purchases"
 
 const ConditionalRouter = import.meta.env.DEV ? BrowserRouter : HashRouter
 
@@ -25,6 +27,14 @@ const routesArray = (isAuthenticated: boolean) => [
       {
         path: 'user-form',
         element: getAuthRoute(<EditUserForm />, isAuthenticated),
+      },
+      {
+        path: 'purchases',
+        element: getAuthRoute(<Purchases />, isAuthenticated),
+      },
+      {
+        path: 'charts',
+        element: getAuthRoute(<Charts />, isAuthenticated),
       },
       {
         path: 'generate-link',

@@ -60,7 +60,7 @@ export const GenerateLink = () => {
   const { names, phone, id } = location.state ?? {}
   const { addPossibleCustomer, getCustomerReference } = useClient()
   const { products, getProducts, loadingProducts } = useProducts()
-  const { purchases, addPurchase, loading: loadingPurchases, getPurchasesByCustomer } = usePurchase()
+  const { purchases, addPurchase, loadingPurchases, getPurchasesByCustomer } = usePurchase()
   const [purchaseList, setPurchaseList] = useState<PurchaseProductsInterface[]>([])
   const [customerId, setCustomerId] = useState<string | null>(null)
   const { form: formPurchase, handleChange: handleChangePurchase, handleSetValue: handleSetValuePurchase, resetForm: resetFormPurchase } = useForm({
@@ -328,6 +328,7 @@ export const GenerateLink = () => {
           </div>
 
           <Table
+            aria-labelledby='Tabla de productos provisionales'
             removeWrapper
             classNames={{ emptyWrapper: 'h-auto' }}>
             <TableHeader>

@@ -9,19 +9,20 @@ import { CustomerForm } from 'src/types/CustomerInterface'
 
 export const Customer = () => {
   const { id } = useParams()
-  const { enviroments, getEnviroments } = useEnviroment()
+  const { enviroments, getEnviroment } = useEnviroment()
   const { client, getClient, updateClient, loading: loadingClient } = useClient()
   const { loading } = useUser()
   const navigate = useNavigate()
 
   useEffect(() => {
-    const unsubscribe = getClient(id!)
-    const unsubscribeEnv = getEnviroments()
+    const unsub = getClient(id!)
+    const unsubEnv = getEnviroment()
 
     return () => {
-      unsubscribe()
-      unsubscribeEnv()
+      unsub()
+      if (unsubEnv) unsubEnv()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const handleSubmit = async (customer: CustomerForm) => {

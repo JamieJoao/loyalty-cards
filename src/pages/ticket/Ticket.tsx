@@ -12,20 +12,19 @@ import { cutNames } from 'src/utils/functions'
 export const Ticket = () => {
   const { id } = useParams()
   const { loading: loadingClient, client, getClient } = useClient()
-  const { enviroments, getEnviroments } = useEnviroment()
+  const { enviroments, getEnviroment } = useEnviroment()
   const { loading } = useUser()
 
   useEffect(() => {
-    const unsubscribe = getClient(id!)
-    const unsubscribeEnv = getEnviroments()
+    const unsub = getClient(id!)
+    const unsubEnv = getEnviroment()
 
     return () => {
-      unsubscribe()
-      unsubscribeEnv()
+      unsub()
+      if (unsubEnv) unsubEnv()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
-
-  // console.log(client)
 
   if (loading || loadingClient) {
     return <Loading />

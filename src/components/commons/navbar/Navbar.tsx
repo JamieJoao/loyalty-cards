@@ -11,7 +11,7 @@ import {
   NavbarItem,
 } from "@nextui-org/react"
 import { onAuthStateChanged } from 'firebase/auth'
-import { FaChevronDown, FaList } from 'react-icons/fa'
+import { FaChevronDown, FaFileExcel, FaList } from 'react-icons/fa'
 
 import { useAuth } from "src/hooks/useAuth"
 import { Outlet, useNavigate } from "react-router-dom"
@@ -20,6 +20,7 @@ import { useUser } from "src/context/UserContext"
 import ProfileImage from 'assets/images/profile.jpg'
 import { useEffect } from "react"
 import { auth } from "src/fire/init"
+import { FaChartSimple } from "react-icons/fa6"
 
 export const NavbarCustom = () => {
   const { logout } = useAuth()
@@ -34,6 +35,24 @@ export const NavbarCustom = () => {
       icon: <FaList className='text-blue-500' />,
       onClick: () => {
         navigate('user-form')
+      }
+    },
+    {
+      key: 'purchases',
+      text: 'Mis ventas',
+      description: 'Visualiza tus ventas diarias, mensuales y totales, además descarga el reporte si lo necesitas.',
+      icon: <FaFileExcel className='text-success-500' />,
+      onClick: () => {
+        navigate('purchases')
+      }
+    },
+    {
+      key: 'charts',
+      text: 'Gráficos',
+      description: 'Revisa tus gráficos para identificar visualmente el avance de tu negocio.',
+      icon: <FaChartSimple className='text-danger-500' />,
+      onClick: () => {
+        navigate('charts')
       }
     },
   ]

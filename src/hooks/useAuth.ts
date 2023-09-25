@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import {
+  GoogleAuthProvider,
+  signInWithPopup,
   onAuthStateChanged,
   signInWithEmailAndPassword,
   signOut
@@ -39,6 +41,27 @@ export const useAuth = () => {
     setLoading(false)
   }
 
+  const loginWithGoogle = async () => {
+    setLoading(true)
+    setError(null)
+
+    try {
+      const googleProvider = new GoogleAuthProvider()
+
+      googleProvider.setCustomParameters({
+        login_hint: 'prod@prod.com'
+      })
+
+      await signInWithPopup(auth, googleProvider)
+
+    } catch (error) {
+      console.log(error)
+      setError(String(error))
+    }
+
+    setLoading(false)
+  }
+
   const logout = async (callback?: () => void) => {
     try {
       setLoading(true)
@@ -56,6 +79,7 @@ export const useAuth = () => {
 
   return {
     login,
+    loginWithGoogle,
     logout,
     error,
   }
