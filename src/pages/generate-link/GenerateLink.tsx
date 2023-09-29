@@ -17,6 +17,7 @@ import { BsFillPersonXFill } from 'react-icons/bs'
 import { BiCake } from 'react-icons/bi'
 import {
   FaCalendar,
+  FaEdit,
   FaLink,
   FaList,
   FaMinus,
@@ -32,13 +33,16 @@ import moment from 'moment'
 
 import { useForm } from "src/hooks/useForm"
 import { CustomerInterface } from 'src/types/CustomerInterface'
-import { ProductInterface, PurchaseProductsInterface } from 'src/types/PurchaseInterface'
+import { ProductInterface, PurchaseInterface, PurchaseProductsInterface } from 'src/types/PurchaseInterface'
 import { useProducts } from 'src/hooks/useProducts'
 import { useClient } from 'src/hooks/useClient'
 import { usePurchase } from 'src/hooks/usePurchase'
 import { getProductDetail, getTotalByPurchase } from 'src/utils/functions'
 import { ModalShareLink } from '../dashboard/ModalShareLink'
 import { ModalPurchasesList } from './ModalPurchasesList'
+import { ActionButton, PageTitle } from 'src/components'
+import { LuClipboardEdit } from 'react-icons/lu'
+import { parseDateForInput } from 'src/utils/parsers'
 
 interface PurchaseForm {
   names: string
@@ -60,10 +64,17 @@ export const GenerateLink = () => {
   const { names, phone, id } = location.state ?? {}
   const { addPossibleCustomer, getCustomerReference } = useClient()
   const { products, getProducts, loadingProducts } = useProducts()
-  const { purchases, addPurchase, loadingPurchases, getPurchasesByCustomer } = usePurchase()
+  const { purchases, addPurchase, loadingPurchases, getPurchasesByCustomer, updatePurchase } = usePurchase()
   const [purchaseList, setPurchaseList] = useState<PurchaseProductsInterface[]>([])
   const [customerId, setCustomerId] = useState<string | null>(null)
-  const { form: formPurchase, handleChange: handleChangePurchase, handleSetValue: handleSetValuePurchase, resetForm: resetFormPurchase } = useForm({
+  const [productId, setProductId] = useState<number | null>(null)
+  const [currentPurchase, setCurrentPurchase] = useState<PurchaseInterface | null>(null)
+  const { form: formPurchase, handleChange: handleChangePurchase, handleSetValue: handleSetValuePurchase, resetForm: resetFormPurchase, setForm: setFormPurchase } = useForm<{
+    search: string,
+    productId: string[],
+    price: string,
+    quantity: number
+  }>({
     search: '',
     productId: [],
     price: '',
@@ -107,7 +118,7 @@ export const GenerateLink = () => {
   }
 
   const isDisabledFormPurchase = (
-    !formPurchase.productId ||
+    !formPurchase.productId?.length ||
     !formPurchase.price ||
     !formPurchase.quantity
   )
@@ -120,15 +131,31 @@ export const GenerateLink = () => {
 
   const handleAddPurchase = () => {
     if (formPurchase.productId.length) {
-      const productRecovered = products.find(obj => obj.id === formPurchase.productId[0])
-      if (productRecovered) {
-        setPurchaseList([...purchaseList, {
-          product: productRecovered,
-          price: Number(formPurchase.price),
-          quantity: formPurchase.quantity,
-        }])
-        resetFormPurchase()
+      if (productId !== null) {
+        const productRecovered = products.find(obj => obj.id === formPurchase.productId[0])
+        if (productRecovered) {
+          setPurchaseList(purchaseList.map((obj, index) => productId === index
+            ? {
+              product: productRecovered,
+              price: Number(formPurchase.price),
+              quantity: formPurchase.quantity,
+            }
+            : obj))
+        }
       }
+      else {
+        const productRecovered = products.find(obj => obj.id === formPurchase.productId[0])
+        if (productRecovered) {
+          setPurchaseList([...purchaseList, {
+            product: productRecovered,
+            price: Number(formPurchase.price),
+            quantity: formPurchase.quantity,
+          }])
+        }
+      }
+
+      setProductId(null)
+      resetFormPurchase()
     }
   }
 
@@ -186,10 +213,6 @@ export const GenerateLink = () => {
 
   const handleChangeProduct = (e: ChangeEvent<HTMLSelectElement>) => handleSetValuePurchase('productId', [e.target.value])
 
-  const handleRemoveProduct = (index: number) => {
-    setPurchaseList(purchaseList.filter((_, i) => i !== index))
-  }
-
   const getLabelSelectProduct = () => {
     const pLength = productsFiltered.length
 
@@ -210,28 +233,62 @@ export const GenerateLink = () => {
 
   const handleSavePurchase = async () => {
     if (id) {
-      const purchaseDoc = {
-        customer: getCustomerReference(id),
-        names,
-        phone: phone ?? '',
-        products: purchaseList,
-        date: Timestamp.fromDate(moment(form.date).toDate()),
-        used: false,
+      if (currentPurchase) {
+        const purchaseDoc = {
+          products: purchaseList,
+          date: Timestamp.fromDate(moment(form.date).toDate()),
+        }
+        setShowSpinners(true)
+        await updatePurchase(currentPurchase.id, purchaseDoc)
+        resetForm()
+        setPurchaseList([])
+        setShowSpinners(false)
       }
+      else {
+        const purchaseDoc = {
+          customer: getCustomerReference(id),
+          names,
+          phone: phone ?? '',
+          products: purchaseList,
+          date: Timestamp.fromDate(moment(form.date).toDate()),
+          used: false,
+        }
 
-      setShowSpinners(true)
-      await addPurchase(purchaseDoc)
-      resetForm()
-      setPurchaseList([])
-      setShowSpinners(false)
+        setShowSpinners(true)
+        await addPurchase(purchaseDoc)
+        resetForm()
+        setPurchaseList([])
+        setShowSpinners(false)
+      }
     }
+  }
+
+  const handleRemoveProduct = (index: number) => {
+    setPurchaseList(purchaseList.filter((_, i) => i !== index))
+  }
+
+  const handleActionProducts = (key: React.Key, product: PurchaseProductsInterface, index: number) => {
+    switch (key) {
+      case 'delete':
+        handleRemoveProduct(index)
+        break
+      case 'edit':
+        setProductId(index)
+        setFormPurchase({ ...formPurchase, price: String(product.price), quantity: product.quantity, productId: [product.product.id] })
+        break
+    }
+  }
+
+  const handleLoadPurchase = (purchase: PurchaseInterface) => {
+    setPurchaseList(purchase.products)
+    setCurrentPurchase(purchase)
+    handleSetValue('date', parseDateForInput(purchase.date))
   }
 
   return (
     <>
-      {/* <span>{JSON.stringify(formPurchase, null, 2)}</span> */}
       <div className="bc-generate-link">
-        <h3 className="text-md mb-4">
+        {/* <h3 className="text-md mb-4">
           {hasCustomerInRoute
             ? (
               <>
@@ -240,7 +297,17 @@ export const GenerateLink = () => {
               </>
             )
             : 'Generar Link para nuevo usuario'}
-        </h3>
+        </h3> */}
+        <PageTitle>
+          {hasCustomerInRoute
+            ? (
+              <>
+                <span className='font-normal'>Agregar compra a</span>
+                <span className='font-bold uppercase'> {names}</span>
+              </>
+            )
+            : 'Generar Link para nuevo usuario'}
+        </PageTitle>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div className='flex flex-col gap-4'>
@@ -290,6 +357,7 @@ export const GenerateLink = () => {
                 classNames={{ inputWrapper: 'shadow-none' }}
                 label='Precio'
                 placeholder='Ejemplo: 15.9'
+                min={1}
                 type='number'
                 variant='flat'
                 value={formPurchase.price}
@@ -323,7 +391,7 @@ export const GenerateLink = () => {
               isDisabled={isDisabledFormPurchase}
               onClick={handleAddPurchase}
               endContent={<span>s/ {subTotalMemo}</span>}>
-              Agregar
+              {productId !== null ? 'Actualizar' : 'Agregar'}
             </Button>
           </div>
 
@@ -333,7 +401,7 @@ export const GenerateLink = () => {
             classNames={{ emptyWrapper: 'h-auto' }}>
             <TableHeader>
               <TableColumn>PRODUCTO</TableColumn>
-              <TableColumn className='text-center'>SUBTOTAL</TableColumn>
+              <TableColumn className='text-right'>SUBTOTAL</TableColumn>
               <TableColumn className="text-right">ACC</TableColumn>
             </TableHeader>
             <TableBody
@@ -346,15 +414,15 @@ export const GenerateLink = () => {
                   <TableRow
                     key={index}>
                     <TableCell>{getProductDetail(obj)}</TableCell>
-                    <TableCell className='text-center'>s/ {calculatePrice(price + '', quantity)}</TableCell>
+                    <TableCell className='text-right'>s/ {calculatePrice(price + '', quantity)}</TableCell>
                     <TableCell className="text-right">
-                      <Button
-                        size="sm"
-                        color="warning"
-                        variant="bordered"
-                        isIconOnly
-                        startContent={<FaTrash />}
-                        onClick={() => handleRemoveProduct(index)}></Button>
+                      <ActionButton
+                        menuItems={[
+                          { key: 'delete', icon: FaTrash, label: 'Remover' },
+                          { key: 'edit', icon: FaEdit, label: 'Editar' },
+                        ]}
+                        item={obj}
+                        onAction={(key, item) => handleActionProducts(key, item, index)} />
                     </TableCell>
                   </TableRow>
                 )
@@ -438,7 +506,7 @@ export const GenerateLink = () => {
                 isLoading={showSpinners}
                 onClick={handleSavePurchase}
                 endContent={<span>s/ {getTotalByPurchase(purchaseList)}</span>}>
-                Guardar
+                {currentPurchase ? 'Actualizar' : 'Guardar'}
               </Button>
             </div>
           )}
@@ -454,8 +522,9 @@ export const GenerateLink = () => {
         <ModalPurchasesList
           isOpen={!!showModals.purchasesList}
           onClose={() => setShowModals({ purchasesList: false })}
-          customerId={id}
-          purchases={purchases} />
+          currentPurchase={currentPurchase}
+          purchases={purchases}
+          onSelect={handleLoadPurchase} />
       )}
     </>
   )

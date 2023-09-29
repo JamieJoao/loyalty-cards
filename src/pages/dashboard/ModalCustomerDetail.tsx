@@ -10,14 +10,14 @@ interface ModalCustomerDetailProps {
   isOpen: boolean
   currentCustomer: CustomerInterface
   onClose: () => void
-  onAction: (customer: CustomerInterface, key: Key) => void
+  // onAction: (customer: CustomerInterface, key: Key) => void
 }
 
 export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
   isOpen,
   currentCustomer,
   onClose,
-  onAction,
+  // onAction,
 }) => {
   const { names, dni, birthdayDate, phone, purchases, id, occupation, address, sex } = currentCustomer
   const quantityPurchases = getQuantityPurchases(purchases)
@@ -33,7 +33,7 @@ export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
         <ModalHeader>
           <p className="text-tiny uppercase font-bold">{names}</p>
         </ModalHeader>
-        <ModalBody>
+        <ModalBody className='pb-4'>
           <div className="flex items-center gap-4">
             <FaIdCard className='text-default-400' />
             <p className='text-sm'>{dni}</p>
@@ -63,12 +63,12 @@ export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
             <p className='text-sm'>{sex}</p>
           </div>
         </ModalBody>
-        <ModalFooter className='flex-col gap-2'>
+        {/* <ModalFooter className='flex-col gap-2'>
           <Button
             color='primary'
             variant='flat'
             startContent={<FaCartPlus className='text-primary-400' />}
-            onClick={() => onAction(currentCustomer, 'purchase')}>Agregar Compra</Button>
+            onClick={() => onAction(currentCustomer, 'purchase')}>Gestionar Compras</Button>
           <div className="grid grid-cols-2 gap-4 w-full">
             <Button
               variant='flat'
@@ -84,7 +84,7 @@ export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
             variant='flat'
             startContent={<FaTrash className='text-danger-400' />}
             onClick={() => onAction(currentCustomer, 'delete')}>Eliminar</Button>
-        </ModalFooter>
+        </ModalFooter> */}
       </ModalContent>
     </Modal>
   )

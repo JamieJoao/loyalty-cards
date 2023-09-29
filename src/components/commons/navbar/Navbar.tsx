@@ -17,10 +17,13 @@ import { useAuth } from "src/hooks/useAuth"
 import { Outlet, useNavigate } from "react-router-dom"
 import { useUser } from "src/context/UserContext"
 
-import ProfileImage from 'assets/images/profile.jpg'
 import { useEffect } from "react"
 import { auth } from "src/fire/init"
 import { FaChartSimple } from "react-icons/fa6"
+
+import ProfileImg from 'assets/images/profile.jpg'
+import BocatoImg from 'assets/images/logo.png'
+import { BiSolidCategoryAlt } from "react-icons/bi"
 
 export const NavbarCustom = () => {
   const { logout } = useAuth()
@@ -28,6 +31,15 @@ export const NavbarCustom = () => {
   const { user } = useUser()
 
   const menuItems = [
+    {
+      key: 'product',
+      text: 'Gestionar productos',
+      description: 'Agrega, edita y elimina productos y categorías.',
+      icon: <BiSolidCategoryAlt className='text-secondary-500 text-lg' />,
+      onClick: () => {
+        navigate('product')
+      }
+    },
     {
       key: 'edit-user-form',
       text: 'Editar formulario de cliente',
@@ -47,12 +59,12 @@ export const NavbarCustom = () => {
       }
     },
     {
-      key: 'charts',
+      key: 'statistics',
       text: 'Gráficos',
       description: 'Revisa tus gráficos para identificar visualmente el avance de tu negocio.',
       icon: <FaChartSimple className='text-danger-500' />,
       onClick: () => {
-        navigate('charts')
+        navigate('statistics')
       }
     },
   ]
@@ -73,24 +85,26 @@ export const NavbarCustom = () => {
   return (
     <>
       <Navbar
+        className="border-none shadow-md"
+        classNames={{
+          wrapper: 'px-4'
+        }}
         position="static"
         isBordered>
         <NavbarBrand onClick={() => navigate('')}>
           {/* <FaLink /> */}
-          <p className="font-bold text-inherit">Bocato</p>
-        </NavbarBrand>
-        <NavbarContent className="sm:flex gap-4" justify="center">
-          <Dropdown>
+          {/* <p className="font-bold text-inherit">Bocato</p> */}
+          <Dropdown
+            aria-labelledby="dropdown para menu"
+          >
             <NavbarItem className='hover:bg-transparent'>
               <DropdownTrigger>
+                {/* <p className="font-bold text-inherit">Bocato</p> */}
                 <Button
-                  disableRipple
-                  className="p-0 bg-transparent data-[hover=true]:bg-transparent"
-                  endContent={<FaChevronDown />}
-                  radius="sm"
-                  variant="light"
-                >
-                  Menú
+                  variant="light">
+                  <img
+                    src={BocatoImg}
+                    className="h-6" />
                 </Button>
               </DropdownTrigger>
             </NavbarItem>
@@ -114,9 +128,10 @@ export const NavbarCustom = () => {
               ))}
             </DropdownMenu>
           </Dropdown>
+        </NavbarBrand>
+        <NavbarContent className="sm:flex gap-4" justify="center">
 
           <NavbarItem isActive>
-
           </NavbarItem>
           <NavbarItem>
 
@@ -126,13 +141,11 @@ export const NavbarCustom = () => {
           <Dropdown placement="bottom-end">
             <DropdownTrigger>
               <Avatar
-                isBordered
                 as="button"
-                className="transition-transform"
+                className="transition-transform rounded"
                 color="primary"
                 name="Jason Hughes"
-                size="sm"
-                src={ProfileImage}
+                src={ProfileImg}
                 alt="imagen de foto de perfil"
               />
             </DropdownTrigger>

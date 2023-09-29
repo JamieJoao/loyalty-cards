@@ -31,10 +31,11 @@ import {
   FaPhone,
   FaTable,
   FaTicketAlt,
-  FaTrash
+  FaTrash,
+  FaUser
 } from "react-icons/fa"
 import {
-  ModalDelete
+  ModalDelete, ModalUpdateCustomer
 } from "src/components"
 import { CustomerInterface, CustomerPurchase } from 'src/types/CustomerInterface'
 import { useForm } from 'src/hooks/useForm'
@@ -46,6 +47,7 @@ import { Enviroments } from 'src/types/EnviromentsInterface'
 import { ModalShareLink } from './ModalShareLink'
 import { ModalCustomerDetail } from './ModalCustomerDetail'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
+import { BiDetail } from 'react-icons/bi'
 
 interface TabCurrentsCustomersProps {
   clients: CustomerInterface[]
@@ -59,6 +61,7 @@ interface ShowModals {
   deleteClient?: boolean
   shareLink?: boolean
   customerDetail?: boolean
+  updateCustomer?: boolean
 }
 
 interface ShowSpinners {
@@ -79,6 +82,7 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
     deleteClient: false,
     shareLink: false,
     customerDetail: false,
+    updateCustomer: false,
   })
   const [showSpinners, setShowSpinners] = useState<ShowSpinners>({
     deleteClient: false,
@@ -141,6 +145,12 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
       case 'delete':
         setShowModals({ deleteClient: true })
         break
+      case 'user-details':
+        setShowModals({ customerDetail: true })
+        break
+      case 'update-data':
+        setShowModals({ updateCustomer: true })
+        break
     }
   }
 
@@ -153,9 +163,36 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
     }
   }
 
-  const handleModalCustomerDetails = (customer: CustomerInterface) => {
-    setCurrentCustomer(customer)
-    setShowModals({ customerDetail: true })
+  const getCardComponent = (customer: CustomerInterface, index: number) => {
+    const { names, dni, birthdayDate, phone, purchases, id } = customer
+    const quantityPurchases = getQuantityPurchases(purchases)
+    const quantity = quantityPurchases < 10 ? '0' + quantityPurchases : quantityPurchases
+    const purchasesText = 'compra' + (quantityPurchases <= 1 ? '' : 's')
+    const dateParsed = moment(birthdayDate).format('DD/MM/YYYY')
+
+    return (
+      <Card
+        key={id + index}
+        className='pt-2'
+        isPressable
+        shadow='sm'>
+        <CardHeader className="pt-2 px-4 flex-col items-start">
+          <p className="text-tiny uppercase font-bold">{cutNames(names)}</p>
+          <small className="text-default-500">{quantity} {purchasesText}</small>
+          <h4 className="font-bold text-large">{phone}</h4>
+        </CardHeader>
+        <CardFooter className='border-t-1 flex-col gap-2 items-start'>
+          <div className="flex items-center gap-4">
+            <FaIdCard className='text-default-400' />
+            <p className='text-sm'>{dni}</p>
+          </div>
+          <div className="flex items-center gap-4">
+            <FaCalendar className='text-default-400' />
+            <p className='text-sm'>{dateParsed}</p>
+          </div>
+        </CardFooter>
+      </Card>
+    )
   }
 
   return (
@@ -181,38 +218,35 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
         {loadingClients
           ? skeletonMemo
           : (
-            clientsFiltered.map((obj, index) => {
-              const { names, dni, birthdayDate, phone, purchases, id } = obj
-              const quantityPurchases = getQuantityPurchases(purchases)
-              const quantity = quantityPurchases < 10 ? '0' + quantityPurchases : quantityPurchases
-              const purchasesText = 'compra' + (quantityPurchases <= 1 ? '' : 's')
-              const dateParsed = moment(birthdayDate).format('DD/MM/YYYY')
-
-              return (
-                <Card
-                  key={id + index}
-                  className='pt-2'
-                  isPressable
-                  onPress={() => handleModalCustomerDetails(obj)}
-                  shadow='sm'>
-                  <CardHeader className="pt-2 px-4 flex-col items-start">
-                    <p className="text-tiny uppercase font-bold">{cutNames(names)}</p>
-                    <small className="text-default-500">{quantity} {purchasesText}</small>
-                    <h4 className="font-bold text-large">{phone}</h4>
-                  </CardHeader>
-                  <CardFooter className='border-t-1 flex-col gap-2 items-start'>
-                    <div className="flex items-center gap-4">
-                      <FaIdCard className='text-default-400' />
-                      <p className='text-sm'>{dni}</p>
-                    </div>
-                    <div className="flex items-center gap-4">
-                      <FaCalendar className='text-default-400' />
-                      <p className='text-sm'>{dateParsed}</p>
-                    </div>
-                  </CardFooter>
-                </Card>
-              )
-            })
+            clientsFiltered.map((obj, index) => (
+              <Dropdown
+                key={obj.id + index}
+                className="bg-background border-1 border-default-200">
+                <DropdownTrigger>
+                  {getCardComponent(obj, index)}
+                </DropdownTrigger>
+                <DropdownMenu
+                  variant='faded'
+                  aria-labelledby='Menu de opciones'
+                  onAction={key => handleAction(obj, key)}>
+                  <DropdownItem
+                    key='user-details'
+                    startContent={<BiDetail className='text-secondary-400' />}>Detalles</DropdownItem>
+                  <DropdownItem
+                    key='update-data'
+                    startContent={<FaUser className='text-warning-400' />}>Actualizar Datos</DropdownItem>
+                  <DropdownItem
+                    key='link'
+                    startContent={<FaLink className='text-success-400' />}>Ver Link</DropdownItem>
+                  <DropdownItem
+                    key='purchase'
+                    startContent={<FaCartPlus className='text-primary-400' />}>Gestionar Compras</DropdownItem>
+                  <DropdownItem
+                    key='delete'
+                    startContent={<FaTrash className='text-danger-400' />}>Eliminar</DropdownItem>
+                </DropdownMenu>
+              </Dropdown>
+            ))
           )}
       </div>
 
@@ -239,8 +273,12 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
           <ModalCustomerDetail
             currentCustomer={currentCustomer}
             isOpen={!!showModals.customerDetail}
-            onClose={() => setShowModals({ customerDetail: false })}
-            onAction={handleAction} />
+            onClose={() => setShowModals({ customerDetail: false })} />
+
+          <ModalUpdateCustomer
+            customer={currentCustomer}
+            isOpen={!!showModals.updateCustomer}
+            onClose={() => setShowModals({ updateCustomer: false })} />
         </>)
 
       }

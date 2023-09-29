@@ -18,7 +18,7 @@ export interface Forms {
 
 export interface Enviroments {
   // clientsInformation: CustomerInput[]
-  linkShareMessage: string
+  linkShareMessage: string[]
   cardBack: CardBack
   forms: Forms
   id: string

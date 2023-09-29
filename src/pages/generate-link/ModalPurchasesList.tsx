@@ -1,39 +1,52 @@
-import { FC, useEffect } from 'react'
+import { FC, useState, useEffect } from 'react'
 import {
-  Divider,
+  Accordion,
+  AccordionItem,
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
 } from "@nextui-org/react"
-import { useClient } from 'src/hooks/useClient'
-import { DATE_FORMAT_SPECIAL } from 'src/domain/constants'
 import moment from 'moment'
-import { usePurchase } from 'src/hooks/usePurchase'
+
+import { DATE_FORMAT_SPECIAL } from 'src/domain/constants'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
 import { getTotalByPurchase } from 'src/utils/functions'
 import { PurchaseProductDetail } from 'src/components'
 
+import {
+  LuClipboardEdit,
+} from 'react-icons/lu'
+
 interface ModalPurchasesListProps {
-  customerId: string
+  currentPurchase: PurchaseInterface | null
   purchases: PurchaseInterface[]
   isOpen: boolean
   onClose: () => void
+  onSelect: (purchase: PurchaseInterface) => void
 }
 
 export const ModalPurchasesList: FC<ModalPurchasesListProps> = ({
-  customerId,
+  currentPurchase,
   purchases,
   isOpen,
   onClose,
+  onSelect,
 }) => {
-  // const { client, getClient } = useClient()
+  const [selectedKeys, setSelectedKeys] = useState<string[]>([])
 
-  // useEffect(() => {
-  //   const unsub = getClient(customerId, false)
-  //   return () => unsub()
-  // }, [])
+  useEffect(() => {
+    if (!isOpen) {
+      setSelectedKeys([currentPurchase?.id ?? ''])
+    }
+  }, [isOpen, currentPurchase])
+
+  const handleSelectedKeys = (keys: any) => {
+    const [nextID] = keys
+    if (nextID !== undefined) {
+      setSelectedKeys(Array.from(keys))
+    }
+  }
 
   return (
     <Modal
@@ -46,27 +59,40 @@ export const ModalPurchasesList: FC<ModalPurchasesListProps> = ({
       scrollBehavior='inside'>
       <ModalContent>
         <ModalHeader>Historial</ModalHeader>
-        <ModalBody>
-          {purchases.length
-            ? (purchases.map(purchase => (
-              <div
+        <ModalBody
+          className='px-2 py-4'
+        >
+          <Accordion
+            variant='light'
+            selectedKeys={selectedKeys}
+            onSelectionChange={handleSelectedKeys}
+          >
+            {purchases.map(purchase => (
+              <AccordionItem
                 key={purchase.id}
-                className="flex flex-col mb-4">
-                <div className="flex justify-between mb-2">
-                  <p className='text-xs'>{moment(purchase.date).format(DATE_FORMAT_SPECIAL)}</p>
-                  <p className='text-xs'>s/ {getTotalByPurchase(purchase.products)}</p>
-                </div>
-
-                <Divider />
-
+                aria-label='Compra del cliente'
+                title={<p className='text-xs'>{moment(purchase.date).format(DATE_FORMAT_SPECIAL)}</p>}
+                subtitle={<p className='text-xs'>s/ {getTotalByPurchase(purchase.products)}</p>}
+                startContent={
+                  <div
+                    role='button'
+                    className='bg-warning-100 w-unit-8 h-unit-8 rounded-md flex justify-center items-center'
+                    onClick={() => onSelect(purchase)}
+                  >
+                    <LuClipboardEdit className='text-sm text-warning-500' />
+                  </div>
+                }
+              >
                 {purchase.products.map((product, pIndex) => (
-                  <PurchaseProductDetail purchaseProduct={product} key={pIndex} />
+                  <PurchaseProductDetail
+                    key={pIndex}
+                    purchaseProduct={product}
+                  />
                 ))}
-              </div>
-            )))
-            : <p className='text-default-400'>No hay compras que mostrar</p>}
+              </AccordionItem>
+            ))}
+          </Accordion>
         </ModalBody>
-        <ModalFooter></ModalFooter>
       </ModalContent>
     </Modal>
   )

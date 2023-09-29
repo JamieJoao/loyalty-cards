@@ -41,11 +41,15 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  const linkShareMessage = useMemo(() => (
+    enviroments?.linkShareMessage?.join('\n') ?? ''
+  ), [enviroments])
+
   const handleShareLink = () => {
     if (customerId && enviroments) {
       const data = {
         title: 'Bocato',
-        text: enviroments.linkShareMessage ?? '',
+        text: linkShareMessage ?? '',
         url: `${projectURL}mi-ticket/${customerId}`,
         apps: ['com.whatsapp']
       }
@@ -55,8 +59,8 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
   }
 
   const messageToCopy = useMemo(() => (
-    `${enviroments.linkShareMessage ?? ''}\n${projectURL}mi-ticket/${customerId}`
-  ), [enviroments, customerId])
+    `${linkShareMessage ?? ''}\n${projectURL}mi-ticket/${customerId}`
+  ), [linkShareMessage, customerId])
 
   return (
     <Modal

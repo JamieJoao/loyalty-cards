@@ -218,10 +218,10 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
                       startContent={<FaUser className='text-warning-400' />}>Actualizar Datos</DropdownItem>
                     <DropdownItem
                       key='link'
-                      startContent={<FaLink className='text-success-400' />}>Ver link</DropdownItem>
+                      startContent={<FaLink className='text-success-400' />}>Ver Link</DropdownItem>
                     <DropdownItem
                       key='purchase'
-                      startContent={<FaCartPlus className='text-primary-400' />}>Agregar compra</DropdownItem>
+                      startContent={<FaCartPlus className='text-primary-400' />}>Gestionar Compras</DropdownItem>
                     <DropdownItem
                       key='delete'
                       startContent={<FaTrash className='text-danger-400' />}>Eliminar</DropdownItem>

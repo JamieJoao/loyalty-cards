@@ -40,7 +40,8 @@ export const ModalUpdateCustomer: FC<ModalUpdateCustomerProps> = ({
     else {
       resetForm()
     }
-  }, [isOpen])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isOpen, customer])
 
   const isDisabled = (
     !form.names && !form.phone
@@ -54,6 +55,7 @@ export const ModalUpdateCustomer: FC<ModalUpdateCustomerProps> = ({
       await updateClient(id, { ...form })
 
       setShowSpinners(false)
+      onClose()
     }
   }
 
