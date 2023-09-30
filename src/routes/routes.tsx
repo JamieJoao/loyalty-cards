@@ -7,7 +7,7 @@ import { Customer } from "src/pages/customer/Customer"
 import { EditUserForm } from "src/pages/edit-user-form/EditUserForm"
 import { GenerateLink } from "src/pages/generate-link/GenerateLink"
 import { Statistics } from "src/pages/reports/statistics"
-import { Purchases } from "src/pages/reports/purchases"
+import { Purchases } from "src/pages/reports/Purchases"
 
 const ConditionalRouter = import.meta.env.DEV ? BrowserRouter : HashRouter
 
