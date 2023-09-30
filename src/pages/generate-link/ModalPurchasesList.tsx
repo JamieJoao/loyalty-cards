@@ -9,7 +9,7 @@ import {
 } from "@nextui-org/react"
 import moment from 'moment'
 
-import { DATE_FORMAT_SPECIAL } from 'src/domain/constants'
+import { DATE_FORMAT_SPECIAL } from 'src/utils/constants'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
 import { getTotalByPurchase } from 'src/utils/functions'
 import { PurchaseProductDetail } from 'src/components'

@@ -16,7 +16,7 @@ import {
 import CopyToClipboard from 'react-copy-to-clipboard'
 import { FaClipboard, FaShare } from 'react-icons/fa'
 
-import { projectURL } from 'src/domain/constants'
+import { projectURL } from 'src/utils/constants'
 import { useShare } from 'src/hooks/useShare'
 import { ButtonCopy } from 'src/components'
 

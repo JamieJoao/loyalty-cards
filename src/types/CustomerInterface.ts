@@ -28,7 +28,7 @@ export type CustomerForm = {
 export type InputTypes = 'text' | 'select' | 'number' | 'date' | 'textarea'
 export type InputLabelTypes = 'Texto' | 'Opciones' | 'Número' | 'Fecha' | 'Texto Grande'
 
-export interface CustomerInput {
+export interface FieldInput {
   key: keyof CustomerInterface
   label: string
   required: boolean
@@ -38,5 +38,8 @@ export interface CustomerInput {
     label?: string,
     props?: string[]
   }[]
-  type: InputTypes
+  type: {
+    key: InputTypes
+    label: InputLabelTypes
+  }
 }

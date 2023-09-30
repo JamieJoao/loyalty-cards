@@ -1,4 +1,4 @@
-import { CustomerInput } from "./CustomerInterface"
+import { FieldInput } from "./CustomerInterface"
 
 export interface CardBack {
   gifts: number[]
@@ -8,7 +8,8 @@ export interface CardBack {
 
 export interface FormTemplate {
   buttonSubmitText: string
-  customerData: CustomerInput[]
+  // customerData: FieldInput[]
+  fields: FieldInput[]
   name: string
 }
 
@@ -17,7 +18,7 @@ export interface Forms {
 }
 
 export interface Enviroments {
-  // clientsInformation: CustomerInput[]
+  // clientsInformation: FieldInput[]
   linkShareMessage: string[]
   cardBack: CardBack
   forms: Forms

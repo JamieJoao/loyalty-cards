@@ -2,12 +2,11 @@ import { HashRouter, Navigate, useRoutes, BrowserRouter } from "react-router-dom
 
 import { NavbarCustom } from "src/components/commons/navbar/Navbar"
 import { useUser } from "src/context/UserContext"
-import { Dashboard, Login, Product, Ticket } from "src/pages"
+import { CustomizeForms, Dashboard, Login, Product, Ticket } from "src/pages"
 import { Customer } from "src/pages/customer/Customer"
-import { EditUserForm } from "src/pages/edit-user-form/EditUserForm"
 import { GenerateLink } from "src/pages/generate-link/GenerateLink"
 import { Statistics } from "src/pages/reports/statistics"
-import { Purchases } from "src/pages/reports/purchases"
+import { Purchases } from "src/pages/reports/Purchases"
 
 const ConditionalRouter = import.meta.env.DEV ? BrowserRouter : HashRouter
 
@@ -26,7 +25,7 @@ const routesArray = (isAuthenticated: boolean) => [
       },
       {
         path: 'user-form',
-        element: getAuthRoute(<EditUserForm />, isAuthenticated),
+        element: getAuthRoute(<CustomizeForms />, isAuthenticated),
       },
       {
         path: 'purchases',

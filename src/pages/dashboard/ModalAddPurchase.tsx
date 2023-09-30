@@ -32,7 +32,7 @@ import {
 import { CustomerInterface, CustomerPurchase } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
 import { cutNames, filterValidPurchases, getProductDetail } from 'src/utils/functions'
-import { MAX_HEIGHT_PER_ITEM, MAX_ITEMS } from 'src/domain/constants'
+import { MAX_HEIGHT_PER_ITEM, MAX_ITEMS } from 'src/utils/constants'
 import classNames from 'classnames'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
 
