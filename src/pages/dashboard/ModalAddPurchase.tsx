@@ -1,16 +1,11 @@
 import { FC, useState, useEffect, useMemo } from 'react'
 import {
   Button,
-  Divider,
   Input,
-  Listbox,
-  ListboxItem,
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
-  ScrollShadow,
   Spinner,
   Tab,
   Table,
@@ -24,16 +19,14 @@ import {
 import {
   FaTrash,
   FaPlus,
-  FaList,
-  FaDollarSign,
   FaCookieBite,
 } from 'react-icons/fa'
+import classNames from 'classnames'
 
-import { CustomerInterface, CustomerPurchase } from "src/types/CustomerInterface"
+import { CustomerInterface } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
 import { cutNames, filterValidPurchases, getProductDetail } from 'src/utils/functions'
 import { MAX_HEIGHT_PER_ITEM, MAX_ITEMS } from 'src/utils/constants'
-import classNames from 'classnames'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
 
 interface ModalAddPurchaseProps {
@@ -68,6 +61,7 @@ export const ModalAddPurchase: FC<ModalAddPurchaseProps> = ({
     if (isOpen) {
       resetForm()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   const validPurchasesMemo = useMemo(() => (
@@ -188,7 +182,6 @@ export const ModalAddPurchase: FC<ModalAddPurchaseProps> = ({
                 </Tabs>
               </div>
             </ModalBody>
-            {/* <ModalFooter></ModalFooter> */}
           </>
         )}
       </ModalContent>

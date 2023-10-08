@@ -1,9 +1,9 @@
 import { HashRouter, Navigate, useRoutes, BrowserRouter } from "react-router-dom"
 
-import { NavbarCustom } from "src/components/commons/navbar/Navbar"
+import { NavbarCustom } from "src/components/commons/navbar"
 import { useUser } from "src/context/UserContext"
 import { CustomizeForms, Dashboard, Login, Product, Ticket } from "src/pages"
-import { Customer } from "src/pages/customer/Customer"
+import { Customer } from "src/pages/customer/customer"
 import { GenerateLink } from "src/pages/generate-link/GenerateLink"
 import { Statistics } from "src/pages/reports/statistics"
 import { Purchases } from "src/pages/reports/Purchases"

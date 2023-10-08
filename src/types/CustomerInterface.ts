@@ -27,19 +27,3 @@ export type CustomerForm = {
 
 export type InputTypes = 'text' | 'select' | 'number' | 'date' | 'textarea'
 export type InputLabelTypes = 'Texto' | 'Opciones' | 'Número' | 'Fecha' | 'Texto Grande'
-
-export interface FieldInput {
-  key: keyof CustomerInterface
-  label: string
-  required: boolean
-  placeholder?: string
-  options?: {
-    key: string,
-    label?: string,
-    props?: string[]
-  }[]
-  type: {
-    key: InputTypes
-    label: InputLabelTypes
-  }
-}

@@ -1,6 +1,5 @@
 import { FC, useMemo, useState } from 'react'
 import {
-  Button,
   Card,
   CardBody,
   CardHeader,
@@ -11,33 +10,22 @@ import {
   DropdownTrigger,
   Input,
   Skeleton,
-  Table,
-  TableBody,
-  TableCell,
-  TableColumn,
-  TableHeader,
-  TableRow,
 } from "@nextui-org/react"
+import moment from 'moment'
 import {
-  FaCalendar,
   FaCartPlus,
-  FaCopy,
-  FaEllipsisV,
   FaLink,
-  FaShareAlt,
-  FaShoppingCart,
   FaTrash,
   FaUser,
 } from "react-icons/fa"
 import { CustomerInterface } from "src/types/CustomerInterface"
 import { useForm } from 'src/hooks/useForm'
-import { ModalDelete, ModalUpdateCustomer, PurchaseProductDetail } from 'src/components'
+import { ModalDelete, ModalUpdateCustomer } from 'src/components'
 import { ModalShareLink } from './ModalShareLink'
-import moment from 'moment'
 import { DATE_FORMAT_SPECIAL } from 'src/utils/constants'
 import { useNavigate } from 'react-router-dom'
 import classNames from 'classnames'
-import { FaTag } from 'react-icons/fa6'
+import { FaTicket } from 'react-icons/fa6'
 import { getProductDetail, getTotalByPurchase } from 'src/utils/functions'
 
 interface TabPendingCustomersProps {
@@ -85,6 +73,10 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
       : pendingClients
   }, [form.search, clients])
 
+  const handleGoToPreview = (id: string) => {
+    navigate(`/mi-ticket/${id}`)
+  }
+
   const handleAction = (customer: CustomerInterface, key: React.Key) => {
     setCurrentCustomer(customer)
 
@@ -94,6 +86,9 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
         break
       case 'link':
         setShowModals({ shareLink: true })
+        break
+      case 'ticket':
+        handleGoToPreview(customer.id)
         break
       case 'purchase':
         if (customer) {
@@ -156,7 +151,6 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
             {firstPurchase
               ? firstPurchase.products.map((product, index) => (
                 <p key={index} className='text-sm flex-1'>{getProductDetail(product)}</p>
-                // <PurchaseProductDetail purchaseProduct={product} key={index} />
               ))
               : firstPurchaseBackup && (
                 <p className='text-sm flex-1'>{`${firstPurchaseBackup.product} - s/ ${firstPurchaseBackup.price}`}</p>
@@ -219,6 +213,9 @@ export const TabPendingCustomers: FC<TabPendingCustomersProps> = ({
                     <DropdownItem
                       key='link'
                       startContent={<FaLink className='text-success-400' />}>Ver Link</DropdownItem>
+                    <DropdownItem
+                      key='ticket'
+                      startContent={<FaTicket className='text-default-400' />}>Ver Ticket</DropdownItem>
                     <DropdownItem
                       key='purchase'
                       startContent={<FaCartPlus className='text-primary-400' />}>Gestionar Compras</DropdownItem>

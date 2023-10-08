@@ -2,19 +2,14 @@ import { FC, useEffect, useMemo } from 'react'
 import {
   Button,
   ButtonGroup,
-  Divider,
   Image,
-  Input,
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
-  Snippet,
   Spinner,
 } from "@nextui-org/react"
-import CopyToClipboard from 'react-copy-to-clipboard'
-import { FaClipboard, FaShare } from 'react-icons/fa'
+import { FaShare } from 'react-icons/fa'
 
 import { projectURL } from 'src/utils/constants'
 import { useShare } from 'src/hooks/useShare'
@@ -31,7 +26,7 @@ interface ModalShareLinkProps {
 
 export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, onClose }) => {
   const { handleShare, isSharing } = useShare()
-  const { enviroments, getEnviroment, loading } = useEnviroment()
+  const { enviroments, getEnviroment, loadingEnviroment } = useEnviroment()
 
   useEffect(() => {
     const unsub = getEnviroment()
@@ -82,14 +77,14 @@ export const ModalShareLink: FC<ModalShareLinkProps> = ({ customerId, isOpen, on
                 className='mb-4'
                 fullWidth>
                 <ButtonCopy
-                  isLoading={loading}
+                  isLoading={loadingEnviroment}
                   isIconOnly={false}
                   url={messageToCopy.trim()} />
                 <Button
                   color='primary'
                   variant='bordered'
                   spinner={<Spinner size='sm' />}
-                  isLoading={isSharing || loading}
+                  isLoading={isSharing || loadingEnviroment}
                   onClick={() => handleShareLink()}
                   startContent={<FaShare />}
                 >

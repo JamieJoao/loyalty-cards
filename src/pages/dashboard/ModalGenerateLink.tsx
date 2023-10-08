@@ -5,22 +5,16 @@ import {
   Modal,
   ModalBody,
   ModalContent,
-  ModalFooter,
   ModalHeader,
   Spinner,
 } from "@nextui-org/react"
 import {
   FaLink,
   FaCookieBite,
-  FaIdCard,
 } from 'react-icons/fa'
 
 import { useForm } from "src/hooks/useForm"
 import { CustomerPurchase } from 'src/types/CustomerInterface'
-
-// interface Form extends CustomerPurchase {
-//   dni: string
-// }
 
 interface ModalGenerateLinkProps {
   onSubmit: (form: CustomerPurchase) => void
@@ -40,19 +34,18 @@ export const ModalGenerateLink: FC<ModalGenerateLinkProps> = ({
   const { form, handleChange, resetForm } = useForm<CustomerPurchase>({
     product: '',
     price: '',
-    // dni: '',
   })
 
   useEffect(() => {
     if (isOpen) {
       resetForm()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isOpen])
 
   const isDisabled = (
     !form.product ||
     !form.price
-    // !form.dni
   )
 
   return (
@@ -103,21 +96,8 @@ export const ModalGenerateLink: FC<ModalGenerateLinkProps> = ({
                   startContent={<FaLink />}>
                   Generar
                 </Button>
-
-                {/* <Input
-                label='DNI'
-                placeholder='Ejemplo: 12345678'
-                type='number'
-                variant='flat'
-                value={form.dni}
-                onChange={(e) => handleChange(e, 'dni')}
-                spellCheck={false}
-                isReadOnly={!!customerId}
-                startContent={<FaIdCard className='text-default-400' />}
-                pattern='\d*' /> */}
               </div>
             </ModalBody>
-            {/* <ModalFooter></ModalFooter> */}
           </>
         )}
       </ModalContent>
