@@ -6,7 +6,7 @@ import { FaChevronCircleDown, FaDownload, FaEdit, FaPlus, FaSearch, FaTrash } fr
 import { FaPencil } from 'react-icons/fa6'
 import { PageTitle } from 'src/components'
 import { ChevronDown } from 'src/components/icons/chevron-down'
-import { DATE_FORMAT_SIMPLE, DATE_FORMAT_SPECIAL } from 'src/domain/constants'
+import { DATE_FORMAT_SIMPLE, DATE_FORMAT_SPECIAL } from 'src/utils/constants'
 import { useForm } from 'src/hooks/useForm'
 import { usePurchase } from 'src/hooks/usePurchase'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'

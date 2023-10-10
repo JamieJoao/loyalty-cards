@@ -1,58 +1,41 @@
 import { useMemo, FC, useState } from 'react'
 import {
-  Badge,
-  Button,
   Card,
-  CardBody,
   CardFooter,
   CardHeader,
-  Checkbox,
-  Divider,
   Dropdown,
   DropdownItem,
   DropdownMenu,
   DropdownTrigger,
   Input,
   Skeleton,
-  Table,
-  TableBody,
-  TableCell, TableColumn,
-  TableHeader,
-  TableRow
 } from "@nextui-org/react"
+import moment from 'moment'
 import {
-  FaBriefcase,
   FaCalendar,
   FaCartPlus,
-  FaEllipsisV,
   FaIdCard,
   FaLink,
-  FaList,
-  FaPhone,
-  FaTable,
-  FaTicketAlt,
   FaTrash,
   FaUser
 } from "react-icons/fa"
 import {
   ModalDelete, ModalUpdateCustomer
 } from "src/components"
-import { CustomerInterface, CustomerPurchase } from 'src/types/CustomerInterface'
+import { CustomerInterface } from 'src/types/CustomerInterface'
 import { useForm } from 'src/hooks/useForm'
 import { useNavigate } from 'react-router-dom'
 import { cutNames, getQuantityPurchases } from 'src/utils/functions'
-import { ModalAddPurchase } from './ModalAddPurchase'
-import moment from 'moment'
-import { Enviroments } from 'src/types/EnviromentsInterface'
 import { ModalShareLink } from './ModalShareLink'
 import { ModalCustomerDetail } from './ModalCustomerDetail'
-import { PurchaseInterface } from 'src/types/PurchaseInterface'
 import { BiDetail } from 'react-icons/bi'
+import { FaTicket } from 'react-icons/fa6'
+import { EnviromentCollection } from 'src/domain/enviroments-types'
 
 interface TabCurrentsCustomersProps {
   clients: CustomerInterface[]
   updateClient: any
-  enviroments: Enviroments
+  enviroments: EnviromentCollection
   loadingClients: boolean
   deleteClient: (id: string) => Promise<void>
 }
@@ -70,8 +53,6 @@ interface ShowSpinners {
 
 export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
   clients,
-  updateClient,
-  enviroments,
   loadingClients,
   deleteClient,
 }) => {
@@ -103,16 +84,6 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
 
   const handleGoToPreview = (id: string) => {
     navigate(`/mi-ticket/${id}`)
-  }
-
-  const handleRemovePurchase = async (purchases: PurchaseInterface[]) => {
-    if (currentCustomer) {
-      await updateClient(
-        currentCustomer.id,
-        { purchases }
-      )
-      setCurrentCustomer({ ...currentCustomer, purchases })
-    }
   }
 
   const skeletonMemo = useMemo(() => (
@@ -238,6 +209,9 @@ export const TabCurrentsCustomers: FC<TabCurrentsCustomersProps> = ({
                   <DropdownItem
                     key='link'
                     startContent={<FaLink className='text-success-400' />}>Ver Link</DropdownItem>
+                  <DropdownItem
+                    key='ticket'
+                    startContent={<FaTicket className='text-default-400' />}>Ver Ticket</DropdownItem>
                   <DropdownItem
                     key='purchase'
                     startContent={<FaCartPlus className='text-primary-400' />}>Gestionar Compras</DropdownItem>

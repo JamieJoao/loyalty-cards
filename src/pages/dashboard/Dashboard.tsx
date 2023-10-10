@@ -1,6 +1,5 @@
 import { useEffect } from 'react'
 import {
-  Badge,
   Button,
   Tab,
   Tabs,

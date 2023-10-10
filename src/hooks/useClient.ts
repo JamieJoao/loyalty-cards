@@ -3,7 +3,7 @@ import { Unsubscribe } from 'firebase/auth'
 
 import { useFirebase } from "./useFirebase"
 import { CustomerInterface } from 'types/CustomerInterface'
-import { customerCollectionName } from 'domain/constants'
+import { customerCollectionName } from 'src/utils/constants'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
 
 export const useClient = () => {

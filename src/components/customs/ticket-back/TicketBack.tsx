@@ -1,14 +1,13 @@
 import { FC, useMemo } from 'react'
 import cn from 'classnames'
 
-import { CardBack } from 'src/types/EnviromentsInterface'
-
 import Pow1Image from 'assets/images/pow-1.png'
 import Pow2Image from 'assets/images/pow-2.png'
 import HeartImage from 'assets/images/heart.svg'
 import CupcakeImage from 'assets/images/cupcake.png'
 import { getQuantityPurchases } from 'src/utils/functions'
 import { PurchaseInterface } from 'src/types/PurchaseInterface'
+import { CardBack } from 'src/domain/enviroments-types'
 
 interface TicketBackProps {
   cardBackData: CardBack

@@ -1,23 +1,22 @@
-import { FC, Key } from 'react'
-import { Button, ButtonGroup, Dropdown, DropdownItem, DropdownMenu, DropdownTrigger, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react"
-import { FaBriefcase, FaCalendar, FaIdCard, FaLink, FaPhone, FaShoppingCart, FaTicketAlt, FaTransgender, FaTrash } from "react-icons/fa"
-import { FaCartPlus, FaLocationDot } from "react-icons/fa6"
-import { CustomerInterface } from "src/types/CustomerInterface"
-import { cutNames, getQuantityPurchases } from 'src/utils/functions'
+import { FC } from 'react'
 import moment from 'moment'
+import { Modal, ModalBody, ModalContent, ModalHeader } from "@nextui-org/react"
+import { FaBriefcase, FaCalendar, FaIdCard, FaPhone, FaShoppingCart, FaTransgender } from "react-icons/fa"
+import { FaLocationDot } from "react-icons/fa6"
+import { CustomerInterface } from "src/types/CustomerInterface"
+
+import { getQuantityPurchases } from 'src/utils/functions'
 
 interface ModalCustomerDetailProps {
   isOpen: boolean
   currentCustomer: CustomerInterface
   onClose: () => void
-  // onAction: (customer: CustomerInterface, key: Key) => void
 }
 
 export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
   isOpen,
   currentCustomer,
   onClose,
-  // onAction,
 }) => {
   const { names, dni, birthdayDate, phone, purchases, id, occupation, address, sex } = currentCustomer
   const quantityPurchases = getQuantityPurchases(purchases)
@@ -63,28 +62,6 @@ export const ModalCustomerDetail: FC<ModalCustomerDetailProps> = ({
             <p className='text-sm'>{sex}</p>
           </div>
         </ModalBody>
-        {/* <ModalFooter className='flex-col gap-2'>
-          <Button
-            color='primary'
-            variant='flat'
-            startContent={<FaCartPlus className='text-primary-400' />}
-            onClick={() => onAction(currentCustomer, 'purchase')}>Gestionar Compras</Button>
-          <div className="grid grid-cols-2 gap-4 w-full">
-            <Button
-              variant='flat'
-              startContent={<FaTicketAlt className='text-primary-400' />}
-              onClick={() => onAction(currentCustomer, 'ticket')}>Ver Ticket</Button>
-            <Button
-              variant='flat'
-              startContent={<FaLink className='text-primary-400' />}
-              onClick={() => onAction(currentCustomer, 'link')}>Ver Link</Button>
-          </div>
-          <Button
-            color='danger'
-            variant='flat'
-            startContent={<FaTrash className='text-danger-400' />}
-            onClick={() => onAction(currentCustomer, 'delete')}>Eliminar</Button>
-        </ModalFooter> */}
       </ModalContent>
     </Modal>
   )

@@ -1,34 +1,29 @@
 import { Key, useEffect, useState, useMemo } from 'react'
 import {
   Button,
-  Dropdown,
-  DropdownItem,
-  DropdownMenu,
-  DropdownTrigger,
   Input,
-  Pagination,
   Select,
   SelectItem,
   Skeleton,
+  Tab,
   Table,
   TableBody,
   TableCell,
   TableColumn,
   TableHeader,
   TableRow,
+  Tabs,
   Textarea,
 } from "@nextui-org/react"
 import {
   FaEdit,
-  FaEllipsisV,
   FaPlus,
-  FaSearch,
   FaTrash,
 } from "react-icons/fa"
 import { useProducts } from "src/hooks/useProducts"
 import { ProductInterface } from 'src/types/PurchaseInterface'
 import { useForm } from 'src/hooks/useForm'
-import { ActionButton, ModalDelete, PageTitle, QuantityItems, TablePaginated } from 'src/components'
+import { ActionButton, ModalDelete, PageTitle, QuantityItems } from 'src/components'
 import { CategoryInterface } from 'src/types/CategoryInterface'
 import { FaX } from 'react-icons/fa6'
 import { useCategories } from 'src/hooks/useCategories'
@@ -67,6 +62,7 @@ export const Product = () => {
       if (unsub) unsub()
       if (unsubCategories) unsubCategories()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   useEffect(() => {
@@ -204,141 +200,160 @@ export const Product = () => {
     <div className="bc-product">
       <PageTitle>Gestionar Productos</PageTitle>
 
-      <div className="grid sm:grid-cols-2 gap-4">
-        <div className="flex flex-col gap-4">
-          <h3 className='font-bold'>Categorías</h3>
+      <Tabs
+        fullWidth>
+        <Tab
+          key='categories'
+          title='Categorías'
+          className='flex gap-4 flex-col sm:flex-row'>
+          <div className="flex flex-col gap-4 sm:flex-1">
+            <Input
+              classNames={{ inputWrapper: 'shadow-none' }}
+              label='Categoría'
+              placeholder='Ejemplo: Minitortas'
+              value={formCategory.name}
+              onChange={e => handleChangeCategory(e, 'name')} />
 
-          <Input
-            classNames={{ inputWrapper: 'shadow-none' }}
-            label='Categoría'
-            placeholder='Ejemplo: Minitortas'
-            value={formCategory.name}
-            onChange={e => handleChangeCategory(e, 'name')} />
+            <div className="flex gap-4">
+              <Button
+                className='flex-auto sm:w-20'
+                variant="ghost"
+                color="default"
+                startContent={<FaX />}
+                isDisabled={!formCategory.name}
+                onClick={resetFormCategory}>
+                Cancelar
+              </Button>
 
-          <div className="flex gap-4">
-            <Button
-              className='flex-auto sm:w-20'
-              variant="ghost"
-              color="default"
-              startContent={<FaX />}
-              isDisabled={!formCategory.name}
-              onClick={resetFormCategory}>
-              Cancelar
-            </Button>
-
-            <Button
-              className='flex-auto sm:w-80'
-              variant="solid"
-              color="primary"
-              startContent={<FaPlus />}
-              isLoading={showSpinners.saveCategory}
-              isDisabled={!formCategory.name}
-              onClick={handleSaveCategory}>
-              {formCategory.id ? 'Actualizar' : 'Registrar'}
-            </Button>
+              <Button
+                className='flex-auto sm:w-80'
+                variant="solid"
+                color="primary"
+                startContent={<FaPlus />}
+                isLoading={showSpinners.saveCategory}
+                isDisabled={!formCategory.name}
+                onClick={handleSaveCategory}>
+                {formCategory.id ? 'Actualizar' : 'Registrar'}
+              </Button>
+            </div>
           </div>
 
-          {/* <Input
-            classNames={{ inputWrapper: 'shadow-none' }}
-            label='Buscar'
-            placeholder='Ejemplo: Minitortas o Brownies'
-            startContent={<FaSearch className='text-default-400' />} /> */}
+          <div className="flex flex-col gap-4 sm:flex-1">
+            <Input
+              classNames={{ inputWrapper: 'shadow-none' }}
+              label='Buscar'
+              placeholder='Ejemplo: Cupcakes'
+              // value={formCategory.name}
+              onChange={e => { }} />
 
-          <QuantityItems items={categories} text='categorías' />
+            <QuantityItems items={categories} text='categorías' />
 
-          {loadingCategories
-            ? skeletonMemo
-            : (
-              <Table
-                removeWrapper>
-                <TableHeader>
-                  <TableColumn>#</TableColumn>
-                  <TableColumn>NOMBRE</TableColumn>
-                  <TableColumn className="text-right">ACCIONES</TableColumn>
-                </TableHeader>
-                <TableBody emptyContent='No hay categorías que mostrar'>
-                  {categories?.map(getCategoryRows)}
-                </TableBody>
-              </Table>
-            )}
+            {loadingCategories
+              ? skeletonMemo
+              : (
+                <Table
+                  removeWrapper>
+                  <TableHeader>
+                    <TableColumn>#</TableColumn>
+                    <TableColumn>NOMBRE</TableColumn>
+                    <TableColumn className="text-right">ACCIONES</TableColumn>
+                  </TableHeader>
+                  <TableBody emptyContent='No hay categorías que mostrar'>
+                    {categories?.map(getCategoryRows)}
+                  </TableBody>
+                </Table>
+              )}
 
-          {/* <div className="flex justify-center">
-            <Pagination total={1} initialPage={1} />
-          </div> */}
-        </div>
-        <div className="flex flex-col gap-4">
-          <h3 className='font-bold'>Productos</h3>
+            {/* <div className="flex justify-center">
+              <Pagination total={1} initialPage={1} />
+            </div> */}
+          </div>
+        </Tab>
+        <Tab
+          key='products'
+          title='Productos'
+          className='flex gap-4 flex-col sm:flex-row'>
+          <div className="flex flex-col gap-4 sm:flex-1">
+            <Textarea
+              classNames={{ inputWrapper: 'shadow-none' }}
+              label='Producto'
+              placeholder="Ejemplo: Minitorta O1 - 22.5"
+              minRows={10}
+              value={formProduct.name}
+              onChange={e => handleChangeProduct(e, 'name')} />
 
-          <Textarea
-            classNames={{ inputWrapper: 'shadow-none' }}
-            label='Producto'
-            placeholder="Ejemplo: Minitorta O1 - 22.5"
-            minRows={10}
-            value={formProduct.name}
-            onChange={e => handleChangeProduct(e, 'name')} />
+            <Select
+              startContent={<MdLabel className='text-default-400' />}
+              label="Categoría"
+              placeholder="Selecciona una categoría"
+              // selectedKeys={formProduct.category}
+              selectedKeys={[selectedCategory]}
+              // value={selectedCategory}
+              // isDisabled={!formProduct.name}
+              onChange={e => setSelectedCategory(e.target.value)}
+            >
+              {categories.map(category => (
+                <SelectItem
+                  key={category.id}
+                  value={category.id}>
+                  {category.name}
+                </SelectItem>
+              ))}
+            </Select>
 
-          <Select
-            startContent={<MdLabel className='text-default-400' />}
-            label="Categoría"
-            placeholder="Selecciona una categoría"
-            // selectedKeys={formProduct.category}
-            selectedKeys={[selectedCategory]}
-            // value={selectedCategory}
-            // isDisabled={!formProduct.name}
-            onChange={e => setSelectedCategory(e.target.value)}
-          >
-            {categories.map(category => (
-              <SelectItem
-                key={category.id}
-                value={category.id}>
-                {category.name}
-              </SelectItem>
-            ))}
-          </Select>
+            <div className="flex gap-4">
+              <Button
+                className='flex-auto sm:w-20'
+                variant="ghost"
+                color="default"
+                startContent={<FaX />}
+                isDisabled={!formProduct.name && !selectedCategory}
+                onClick={resetFormProduct}>
+                Cancelar
+              </Button>
 
-          <div className="flex gap-4">
-            <Button
-              className='flex-auto sm:w-20'
-              variant="ghost"
-              color="default"
-              startContent={<FaX />}
-              isDisabled={!formProduct.name && !selectedCategory}
-              onClick={resetFormProduct}>
-              Cancelar
-            </Button>
-
-            <Button
-              className='flex-auto sm:w-80'
-              variant="solid"
-              color="primary"
-              startContent={<FaPlus />}
-              isLoading={showSpinners.saveProduct}
-              isDisabled={!formProduct.name || !selectedCategory}
-              onClick={handleSaveProduct}>
-              {formProduct.id ? 'Actualizar' : 'Registrar'}
-            </Button>
+              <Button
+                className='flex-auto sm:w-80'
+                variant="solid"
+                color="primary"
+                startContent={<FaPlus />}
+                isLoading={showSpinners.saveProduct}
+                isDisabled={!formProduct.name || !selectedCategory}
+                onClick={handleSaveProduct}>
+                {formProduct.id ? 'Actualizar' : 'Registrar'}
+              </Button>
+            </div>
           </div>
 
-          <QuantityItems items={products} text='productos' />
+          <div className="flex flex-col gap-4 sm:flex-1">
+            <Input
+              classNames={{ inputWrapper: 'shadow-none' }}
+              label='Buscar'
+              placeholder='Ejemplo: Minitorta O1'
+              // value={formCategory.name}
+              onChange={e => { }} />
 
-          {loadingProducts
-            ? skeletonMemo
-            : (
-              <Table
-                removeWrapper>
-                <TableHeader>
-                  <TableColumn>#</TableColumn>
-                  <TableColumn>NOMBRE</TableColumn>
-                  <TableColumn>PRECIO</TableColumn>
-                  <TableColumn className="text-right">ACCIONES</TableColumn>
-                </TableHeader>
-                <TableBody emptyContent='No hay categorías que mostrar'>
-                  {products?.map(getProductsRows)}
-                </TableBody>
-              </Table>
-            )}
-        </div>
-      </div>
+            <QuantityItems items={products} text='productos' />
+
+            {loadingProducts
+              ? skeletonMemo
+              : (
+                <Table
+                  removeWrapper>
+                  <TableHeader>
+                    <TableColumn>#</TableColumn>
+                    <TableColumn>NOMBRE</TableColumn>
+                    <TableColumn>PRECIO</TableColumn>
+                    <TableColumn className="text-right">ACCIONES</TableColumn>
+                  </TableHeader>
+                  <TableBody emptyContent='No hay categorías que mostrar'>
+                    {products?.map(getProductsRows)}
+                  </TableBody>
+                </Table>
+              )}
+          </div>
+        </Tab>
+      </Tabs>
 
       {/* <pre>{JSON.stringify(selectedCategory, null, 2)}</pre> */}
 

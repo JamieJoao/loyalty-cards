@@ -1,5 +1,6 @@
 /** @type {import('tailwindcss').Config} */
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires, no-undef
 const { nextui } = require("@nextui-org/react");
 
 export default {

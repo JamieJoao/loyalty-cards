@@ -87,7 +87,7 @@ export const ModalUpdateCustomer: FC<ModalUpdateCustomerProps> = ({
               fullWidth
               startContent={<FaUser />}
               color='primary'
-              variant='shadow'
+              variant='solid'
               isDisabled={isDisabled}
               isLoading={showSpinners}
               onClick={handleClick}>
